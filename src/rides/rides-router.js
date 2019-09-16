@@ -24,6 +24,9 @@ ridesRouter
 
   //take delete request and delete driver's ride from db 
   .delete((req, res, next) => {
+  //have to send id in and check id match for driver otherwise dont let delete
+  //or have delete be verified frontend by sending driver id from rides list (ref driver id column to user id)
+  //if else frontend to allow deletion request to be sent through
 
     res.status(204);
     //got 204 no content when testing on postman
