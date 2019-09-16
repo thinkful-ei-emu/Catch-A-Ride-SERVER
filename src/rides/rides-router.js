@@ -10,6 +10,7 @@ ridesRouter
   //get rides available using service from db
   .get((req, res, next) => {
     //take req.body and descturcture, query db to get search results based on body params
+    //send back driver id as well to allow for frontend verfication when deleting entire ride
     res.status(200).json('get /');
   });
 
