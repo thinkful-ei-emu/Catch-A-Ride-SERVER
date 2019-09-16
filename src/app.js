@@ -4,6 +4,7 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const helmet = require('helmet');
+const ridesRouter = require('./rides/rides-router');
 
 const NODE_ENV = require('./config');
 
@@ -24,6 +25,8 @@ app.get('/', (req, res) => {
 app.post('/', (req, res) => {
   res.send('POST received.');
 });
+
+app.use('/api/rides', ridesRouter);
 
 app.use(function errorHandler(error, req, res, next) {
   let response;
