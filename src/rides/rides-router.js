@@ -52,6 +52,14 @@ ridesRouter
     //got 204 no content when testing on postman
   });
 
+ridesRouter
+
+  //get info for single park
+  .route('/:ride_id')
+  .get((req, res, next) => {
+    res.status(200).json('single ride');
+  });
+
     
 
 module.exports = ridesRouter;
