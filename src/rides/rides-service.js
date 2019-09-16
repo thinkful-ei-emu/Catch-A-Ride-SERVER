@@ -18,6 +18,9 @@ const RidesService = {
   //delete passenger from ride
   removePassengerFromRide(){},
 
+  //get single ride by id prolly
+  getSingleRide(){}
+
 };
 
 module.exports = RidesService;
