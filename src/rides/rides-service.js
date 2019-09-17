@@ -29,7 +29,7 @@ const RidesService = {
   //     .into('rides')
   //     .returning('*')
   //     .then(([ride]) => ride)
-  // },
+  },
 
 
   //remove entire ride
@@ -49,7 +49,7 @@ const RidesService = {
     //   .select('*')
     //   .where('driver_id', driverId)
 
-  }
+  },
 
 
   //get all rides per passenger id

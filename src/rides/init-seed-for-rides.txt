@@ -1,0 +1,11 @@
+BEGIN;
+
+TRUNCATE
+"rides"
+
+INSERT INTO "rides" ("id", "driver_id", "starting_loc", "ending_loc", "date_time", "description", "capacity", "p1", "p2", "p3", "p4", "p5", "p6", "p7")
+VALUES
+(1, 1, "Blacksburg", "Virginia Beach", "9/16/2019 5 AM", "$10 for gas", 4, 2),
+(2, 1, "Virginia Beach", "Blacksburg", "9/16/2019 5 AM", "$10 for gas", 4, 2, 3);
+
+COMMIT;
