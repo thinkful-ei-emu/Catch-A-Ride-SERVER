@@ -11,6 +11,13 @@ ridesRouter
   .get((req, res, next) => {
     //take req.body and descturcture, query db to get search results based on body params
     //send back driver id as well to allow for frontend verfication when deleting entire ride
+
+    // RidesService.getSearchedRides(
+    //   req.app.get('db'),
+    //   startingLoc,
+    //   endingLoc,
+    // )
+
     res.status(200).json('get /');
   });
 
@@ -20,6 +27,12 @@ ridesRouter
   //post driver form and add to rides db
   .post(jsonBodyParser, (req, res, next) => {
     //take req.body and descructure, add into db
+
+    // RidesService.addNewDriverRide(
+    //   req.app.get('db'),
+    //   newRide
+    // )
+
     res.status(201).json('post /driver');
   })
 
@@ -29,6 +42,11 @@ ridesRouter
   //or have delete be verified frontend by sending driver id from rides list (ref driver id column to user id)
   //if else frontend to allow deletion request to be sent through
 
+    // RidesService.deleteDriverRide(
+    //   req.app.get('db'),
+    //   ride_id,
+    // )
+    
     res.status(204);
     //got 204 no content when testing on postman
   });
@@ -38,16 +56,45 @@ ridesRouter
 
 //get passenger specific rides
   .get((req, res, next) => {
+    
+
+    // RidesService.getAllPassengerRides(
+    //   req.app.get('db'),
+    //   pass_id
+    // )
+
     res.status(200).json('get /passenger');
   })
 
 //passenger clicks reserve/add to ride and update db p1, p2, whichever next is null
   .post(jsonBodyParser, (req, res, next) => {
+
+    // let ride = RidessService.getSingleRide(
+    //   req.app.get('db'),
+    //   ride_id
+    // )
+
+    // RidesService.addPassengerToRide(
+    //   req.app.get('db'),
+    //   updatedRide
+    // )
+
     res.status(201).json('post /passenger');
   })
 
 //passenger clicks delete and update db p1, p2, whichever matches passanger
   .delete((req, res, next) => {
+
+    // let ride = RidessService.getSingleRide(
+    //   req.app.get('db'),
+    //   ride_id
+    // )
+
+    // RidesService.removePassengerFromRide(
+    //   req.app.get('db'),
+    //   updatedRide
+    // )
+
     res.status(204);
     //got 204 no content when testing on postman
   });
@@ -57,6 +104,12 @@ ridesRouter
   //get info for single park
   .route('/:ride_id')
   .get((req, res, next) => {
+
+    // RidesService.getSingleRide(
+    //   req.app.get('db'),
+    //   req.params.id
+    // )
+    
     res.status(200).json('single ride');
   });
 

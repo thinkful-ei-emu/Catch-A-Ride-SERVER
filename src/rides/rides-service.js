@@ -31,6 +31,7 @@ const RidesService = {
   //     .then(([ride]) => ride)
   // },
 
+
   //remove entire ride
   deleteDriverRide(){
     //takes db, ride_Id
@@ -39,6 +40,7 @@ const RidesService = {
     //   .where('id', ride_id)
     //   .del();
   },
+
 
   //get all rides per passenger id
   getAllPassengerRides(){
@@ -65,27 +67,28 @@ const RidesService = {
     //   });
   },
 
+
   //insert passenger to ride id
   addPassengerToRide(){
-    //takes db, pass_id, ride_id
+    //takes db, updatedRide
 
     // return db
+    //   .from('rides')
     //   .where('id', ride_id)
-    //   .update({
-    //     //which column is not null and set column value to pass_id
-    //   })
+    //   .update(updatedRide)
   },
+
 
   //delete passenger from ride
   removePassengerFromRide(){
-    //takes db, pass_id, and ride_id
+    //takes db, updatedRide
 
     // return db
+    //   .from('rides')
     //   .where('id', ride_id)
-    //   .update({
-    //     //which column containes pass_id, and then update to null
-    //   })
+    //   .update(updatedRide)
   },
+
 
   //get single ride by id prolly
   getSingleRide(){
