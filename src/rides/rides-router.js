@@ -24,6 +24,19 @@ ridesRouter
 ridesRouter
   .route('/driver')
 
+
+  //get all drivers rides
+  .get((req, res, next) => {
+
+    // RidesService.getDriverRides(
+    //   req.app.get('db'),
+    //   driverId
+    // )
+
+    res.status(200).json('get /driver')
+
+  })
+
   //post driver form and add to rides db
   .post(jsonBodyParser, (req, res, next) => {
     //take req.body and descructure, add into db

@@ -41,6 +41,16 @@ const RidesService = {
     //   .del();
   },
 
+  getDriverRides(){
+    //takes db, driver id
+
+    // return db
+    //   .from('rides')
+    //   .select('*')
+    //   .where('driver_id', driverId)
+
+  }
+
 
   //get all rides per passenger id
   getAllPassengerRides(){
