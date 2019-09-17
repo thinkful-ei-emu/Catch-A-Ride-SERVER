@@ -1,0 +1,17 @@
+create table 'rides'(
+"id" SERIAL PRIMARY key,
+"driver_id" integer references "users"(id),
+"starting" text not NULL,
+"destination" text not NULL,
+"date" date not null,
+"time" time not null,
+"description" text not NULL,
+"capacity" integer not null,
+"p1" default null integer references "users"(id),
+"p2" default null integer references "users"(id),
+"p3" default null integer references "users"(id),
+"p4" default null integer references "users"(id),
+"p5" default null integer references "users"(id),
+"p6" default null integer references "users"(id),
+"p7" default null integer references "users"(id),
+);
