@@ -40,6 +40,12 @@ ridesRouter
   //post driver form and add to rides db
   .post(jsonBodyParser, (req, res, next) => {
     //take req.body and descructure, add into db
+    
+    
+    // take date and convert it into year-month-day
+    // var tdate = '01-30-2001';
+    // tdate = [tdate.slice(-4), tdate.slice(0,5)].join('-');
+    // console.log(tdate)
 
     // RidesService.addNewDriverRide(
     //   req.app.get('db'),
