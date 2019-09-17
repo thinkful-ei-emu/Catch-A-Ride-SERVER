@@ -12,13 +12,31 @@ ridesRouter
     //take req.body and descturcture, query db to get search results based on body params
     //send back driver id as well to allow for frontend verfication when deleting entire ride
 
+    // if(!res.body.startingLoc === null){
+    //   RidesService.getDestinationResultsOnly(
+    //     req.app.get('db'),
+    //     destination
+    //   );
+    //   res.status(201).json('destinations only');
+    // }
+
+    // else if(!res.body.destination === null){
+    //   RidesService.getStartingResultsOnly(
+    //     req.app.get('db'),
+    //     starting
+    //   );
+    //   res.status(201).json('starting locations only');
+    // };
+
+    // else{
     // RidesService.getSearchedRides(
     //   req.app.get('db'),
-    //   startingLoc,
-    //   endingLoc,
-    // )
+    //   starting,
+    //   destination,
+    // );
+    // res.status(201).json('post / , send starting and ending from frontend');
+    // }
 
-    res.status(201).json('post / , send starting and ending from frontend');
   });
 
 ridesRouter

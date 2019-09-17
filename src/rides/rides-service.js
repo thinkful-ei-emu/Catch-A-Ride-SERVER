@@ -4,13 +4,13 @@ const RidesService = {
   getSearchedRides(){
     //takes db, starting loc, ending loc
 
-    return db
-      .from('rides')
-      .select('*')
-      .where({
-        starting_loc: startingLoc,
-        ending_loc: endingLoc,
-      });
+    // return db
+    //   .from('rides')
+    //   .select('*')
+    //   .where({
+    //     starting: starting,
+    //     destination: destination,
+    //   });
 
     // knex('users').where({
     //   first_name: 'Test',
@@ -18,6 +18,31 @@ const RidesService = {
     // }).select('id')
     // Outputs: select `id` from `users` where `first_name` = 'Test' and `last_name` = 'User'
   },
+
+  //maybe search with only destination?
+  // getDestinationResultsOnly(){
+
+  //   // return db
+  //   //   .from('rides')
+  //   //   .select('*')
+  //   //   .where({
+  //   //     destination: destination,
+  //   //   });
+
+  // },
+
+
+  // //maybe search with only destination?
+  // getStartingResultsOnly(){
+
+  //   // return db
+  //   //   .from('rides')
+  //   //   .select('*')
+  //   //   .where({
+  //   //     starting: starting,
+  //   //   });
+
+  // },
 
 
   //insert ride from driver form
