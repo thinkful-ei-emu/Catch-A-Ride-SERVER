@@ -13,6 +13,7 @@ ridesRouter
     //send back driver id as well to allow for frontend verfication when deleting entire ride
 
     // if(!res.body.startingLoc === null){
+    //   const {destination} = req.body
     //   RidesService.getDestinationResultsOnly(
     //     req.app.get('db'),
     //     destination
@@ -21,6 +22,7 @@ ridesRouter
     // }
 
     // else if(!res.body.destination === null){
+    //   const {starting} = req.body
     //   RidesService.getStartingResultsOnly(
     //     req.app.get('db'),
     //     starting
@@ -29,6 +31,7 @@ ridesRouter
     // };
 
     // else{
+    // const {starting, location} = req.body;
     // RidesService.getSearchedRides(
     //   req.app.get('db'),
     //   starting,
@@ -42,16 +45,15 @@ ridesRouter
 ridesRouter
   .route('/driver')
 
-
   //get all drivers rides
   .get((req, res, next) => {
 
     // RidesService.getDriverRides(
     //   req.app.get('db'),
-    //   driverId
+    //   req.user.id
     // )
 
-    res.status(200).json('get /driver')
+    res.status(200).json('get /driver and drivers rides');
 
   })
 
@@ -59,6 +61,17 @@ ridesRouter
   .post(jsonBodyParser, (req, res, next) => {
     //take req.body and descructure, add into db
     
+    // const {starting, destination, date, time, description, capacity} = req.body;
+
+    // newRide = {starting, destination, date, time, description, capacity}
+
+    // for (const [key, value] of Object.entries(newReview))
+    //   if (value == null)
+    //     return res.status(400).json({
+    //       error: `Missing '${key}' in request body`
+    //     });
+    
+    // newRide.driver_id = req.user.id;
     
     // take date and convert it into year-month-day
     // var tdate = '01-30-2001';
@@ -79,6 +92,7 @@ ridesRouter
   //or have delete be verified frontend by sending driver id from rides list (ref driver id column to user id)
   //if else frontend to allow deletion request to be sent through
 
+    // const {ride_id} = req.body;
     // RidesService.deleteDriverRide(
     //   req.app.get('db'),
     //   ride_id,
@@ -94,10 +108,9 @@ ridesRouter
 //get passenger specific rides
   .get((req, res, next) => {
     
-
     // RidesService.getAllPassengerRides(
     //   req.app.get('db'),
-    //   pass_id
+    //   req.user.id
     // )
 
     res.status(200).json('get /passenger');
@@ -106,10 +119,15 @@ ridesRouter
 //passenger clicks reserve/add to ride and update db p1, p2, whichever next is null
   .post(jsonBodyParser, (req, res, next) => {
 
+    // const {ride_id} = req.body;
+
     // let ride = RidessService.getSingleRide(
     //   req.app.get('db'),
     //   ride_id
     // )
+
+    // take ride object and transfer data into updated ride with next p1, 2, 3, changed to id and not null
+    // let updatedRide = {}
 
     // RidesService.addPassengerToRide(
     //   req.app.get('db'),
@@ -126,6 +144,9 @@ ridesRouter
     //   req.app.get('db'),
     //   ride_id
     // )
+
+    //find passenger id amount p1, 2, 3, etc, and set it to null
+    // let updatedRide = {}
 
     // RidesService.removePassengerFromRide(
     //   req.app.get('db'),
