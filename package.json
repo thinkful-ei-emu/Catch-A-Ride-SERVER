@@ -8,7 +8,9 @@
     "test": "mocha --require test/setup.js",
     "dev": "nodemon src/server.js",
     "predeploy": "npm audit",
-    "deploy": "git push heroku master"
+    "deploy": "git push heroku master",
+    "migrate": "postgrator --config postgrator-config.js",
+    "migrate-production": "postgrator --config postgrator-production-config.js"
   },
   "author": "Andrew Yin",
   "license": "ISC",
@@ -16,6 +18,8 @@
     "chai": "^4.2.0",
     "mocha": "^6.1.4",
     "nodemon": "^1.19.2",
+    "postgrator": "^3.10.2",
+    "postgrator-cli": "^3.3.0",
     "supertest": "^4.0.2"
   },
   "dependencies": {
@@ -25,6 +29,8 @@
     "google-auth-library": "^5.2.2",
     "googleapis": "^43.0.0",
     "helmet": "^3.19.0",
-    "morgan": "^1.9.1"
+    "knex": "^0.19.4",
+    "morgan": "^1.9.1",
+    "pg": "^7.12.1"
   }
 }

@@ -11,16 +11,31 @@ const AuthService = {
    * id_token
    */
   async verifyGoogleToken(idToken) {
+    const validToken = {
+      userInfo: null,
+      error: null
+    };
     try {
       const ticket = await client.verifyIdToken({
         idToken,
         audience: config.CLIENT_ID
       });
 
-      const payload = ticket.getPayload();
-      const userid = payload['sub'];
+      if (!ticket) {
+        validToken.error = {
+          error: 'invalid token'
+        };
+      }
+      else {
+        const { email, sub, name } = ticket.getPayload();
+        validToken.payload = {
+          email,
+          name,
+          sub
+        };
+      }
 
-      return userid;
+      return validToken;
     }
     catch (e) {
       console.error(e.message);
@@ -34,10 +49,10 @@ const AuthService = {
    * @param {knex instance} db 
    * @param {string} username 
    */
-  hasUserWithUserName(db, username) {
+  getUserWithUserId(db, user_id) {
     return db(this.tableName)
       .where({
-        username
+        user_id
       })
       .first();
   },
