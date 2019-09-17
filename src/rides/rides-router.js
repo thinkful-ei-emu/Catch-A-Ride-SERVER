@@ -8,7 +8,7 @@ ridesRouter
   .route('/')
   
   //get rides available using service from db
-  .post((req, res, next) => {
+  .post(jsonBodyParser, (req, res, next) => {
     //take req.body and descturcture, query db to get search results based on body params
     //send back driver id as well to allow for frontend verfication when deleting entire ride
 
