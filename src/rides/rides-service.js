@@ -4,13 +4,13 @@ const RidesService = {
   getSearchedRides(){
     //takes db, starting loc, ending loc
 
-    // return db
-    //   .from('rides')
-    //   .select('*')
-    //   .where({
-    //     starting_loc: startingLoc,
-    //     ending_loc: endingLoc,
-    //   });
+    return db
+      .from('rides')
+      .select('*')
+      .where({
+        starting_loc: startingLoc,
+        ending_loc: endingLoc,
+      });
 
     // knex('users').where({
     //   first_name: 'Test',
