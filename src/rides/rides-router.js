@@ -12,7 +12,7 @@ ridesRouter
     //take req.body and descturcture, query db to get search results based on body params
     //send back driver id as well to allow for frontend verfication when deleting entire ride
 
-    // if(!res.body.startingLoc === null){
+    // if(res.body.starting === null){
     //   const {destination} = req.body
     //   RidesService.getDestinationResultsOnly(
     //     req.app.get('db'),
@@ -21,7 +21,7 @@ ridesRouter
     //   res.status(201).json('destinations only');
     // }
 
-    // else if(!res.body.destination === null){
+    // else if(res.body.destination === null){
     //   const {starting} = req.body
     //   RidesService.getStartingResultsOnly(
     //     req.app.get('db'),
