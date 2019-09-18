@@ -49,16 +49,22 @@ ridesRouter
 
 ridesRouter
   .route('/driver')
+  .all(requireAuth)
 
   //get all drivers rides
-  .get((req, res, next) => {
+  .get( async (req, res, next) => {
 
-    // RidesService.getDriverRides(
-    //   req.app.get('db'),
-    //   req.user.id
-    // )
+    try{
 
-    res.status(200).json('get /driver and drivers rides');
+      let driversRides = await RidesService.getDriverRides(
+        req.app.get('db'),
+        req.user.user_id
+      );
+      res.status(200).json(driversRides);
+    }
+    catch(e){
+      next();
+    }
 
   })
 
@@ -77,7 +83,7 @@ ridesRouter
             error: `Missing '${key}' in request body`
           });
     
-      //newRide.driver_id = req.user.id;
+      newRide.driver_id = req.user.user_id;
     
       // take date and convert it into year-month-day
       // var tdate = '01-30-2001';

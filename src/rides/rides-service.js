@@ -68,13 +68,13 @@ const RidesService = {
       .del();
   },
 
-  getDriverRides(){
+  getDriverRides(db, driverId){
     //takes db, driver id
 
-    // return db
-    //   .from('rides')
-    //   .select('*')
-    //   .where('driver_id', driverId)
+    return db
+      .from('rides')
+      .select('*')
+      .where('driver_id', driverId);
 
   },
 
