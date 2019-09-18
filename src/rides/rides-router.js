@@ -132,16 +132,23 @@ ridesRouter
 
 ridesRouter
   .route('/passenger')
+  .all(requireAuth)
 
 //get passenger specific rides
-  .get((req, res, next) => {
-    
-    // RidesService.getAllPassengerRides(
-    //   req.app.get('db'),
-    //   req.user.id
-    // )
+  .get( async(req, res, next) => {
 
-    res.status(200).json('get /passenger');
+    try{
+      let passengerRides = await RidesService.getAllPassengerRides(
+        req.app.get('db'),
+        req.user.user_id
+      );
+  
+      res.status(200).json(passengerRides);
+    }
+    catch(e){
+      next();
+    }
+    
   })
 
 //passenger clicks reserve/add to ride and update db p1, p2, whichever next is null

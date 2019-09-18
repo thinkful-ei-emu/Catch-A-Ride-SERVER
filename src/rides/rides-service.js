@@ -80,28 +80,31 @@ const RidesService = {
 
 
   //get all rides per passenger id
-  getAllPassengerRides(){
+  getAllPassengerRides(db, pass_id){
     //takes db, pass_id
 
-    // return db
-    //   .from('rides')
-    //   .select('*')
-    //   .where('p1', pass_id)
-    //   .orWhere({
-    //     p2: pass_id,
-    //   })
-    //   .orWhere({
-    //     p3: pass_id,
-    //   })
-    //   .orWhere({
-    //     p4: pass_id,
-    //   })
-    //   .orWhere({
-    //     p5: pass_id,
-    //   })
-    //   .orWhere({
-    //     p6: pass_id,
-    //   });
+    return db
+      .from('rides')
+      .select('*')
+      .where('p1', pass_id)
+      .orWhere({
+        p2: pass_id,
+      })
+      .orWhere({
+        p3: pass_id,
+      })
+      .orWhere({
+        p4: pass_id,
+      })
+      .orWhere({
+        p5: pass_id,
+      })
+      .orWhere({
+        p6: pass_id,
+      })
+      .orWhere({
+        p7: pass_id,
+      });
   },
 
 
