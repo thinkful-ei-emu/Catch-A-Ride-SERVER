@@ -59,12 +59,13 @@ const RidesService = {
 
 
   //remove entire ride
-  deleteDriverRide(){
+  deleteDriverRide(db, ride_id){
     //takes db, ride_Id
     
-    // return db
-    //   .where('id', ride_id)
-    //   .del();
+    return db
+      .from('rides')
+      .where('id', ride_id)
+      .del();
   },
 
   getDriverRides(){

@@ -96,19 +96,25 @@ ridesRouter
   })
 
   //take delete request and delete driver's ride from db 
-  .delete((req, res, next) => {
+  .delete(jsonBodyParser, async (req, res, next) => {
   //have to send id in and check id match for driver otherwise dont let delete
   //or have delete be verified frontend by sending driver id from rides list (ref driver id column to user id)
   //if else frontend to allow deletion request to be sent through
 
-    // const {ride_id} = req.body;
-    // RidesService.deleteDriverRide(
-    //   req.app.get('db'),
-    //   ride_id,
-    // )
-    
-    res.status(204);
-    //got 204 no content when testing on postman
+    try{
+      const {ride_id} = req.body;
+      console.log(ride_id)
+      await RidesService.deleteDriverRide(
+        req.app.get('db'),
+        ride_id,
+      );
+      return res.status(204).end();
+      //got 204 no content when testing on postman
+    }
+    catch(e){
+      next();
+    }
+   
   });
 
 ridesRouter
