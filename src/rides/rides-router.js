@@ -8,7 +8,7 @@ ridesRouter
   .route('/')
   
   //get rides available using service from db
-  .post(jsonBodyParser, (req, res, next) => {
+  .post(jsonBodyParser, async (req, res, next) => {
     //take req.body and descturcture, query db to get search results based on body params
     //send back driver id as well to allow for frontend verfication when deleting entire ride
 
@@ -31,13 +31,16 @@ ridesRouter
     // };
 
     // else{
-    // const {starting, location} = req.body;
-    // RidesService.getSearchedRides(
-    //   req.app.get('db'),
-    //   starting,
-    //   destination,
-    // );
-    // res.status(201).json('post / , send starting and ending from frontend');
+    const {starting, destination} = req.body;
+    let rides = await RidesService.getSearchedRides(
+      req.app.get('db'),
+      starting,
+      destination,
+    );
+
+    console.log(rides);
+
+    res.status(201).json(rides);
     // }
 
   });
@@ -58,32 +61,38 @@ ridesRouter
   })
 
   //post driver form and add to rides db
-  .post(jsonBodyParser, (req, res, next) => {
+  .post(jsonBodyParser, async (req, res, next) => {
     //take req.body and descructure, add into db
+    try{
+
+      const {starting, destination, date, time, description, capacity} = req.body;
+
+      newRide = {starting, destination, date, time, description, capacity};
+
+      for (const [key, value] of Object.entries(newRide))
+        if (value == null)
+          return res.status(400).json({
+            error: `Missing '${key}' in request body`
+          });
     
-    // const {starting, destination, date, time, description, capacity} = req.body;
-
-    // newRide = {starting, destination, date, time, description, capacity}
-
-    // for (const [key, value] of Object.entries(newRide))
-    //   if (value == null)
-    //     return res.status(400).json({
-    //       error: `Missing '${key}' in request body`
-    //     });
+      //newRide.driver_id = req.user.id;
     
-    // newRide.driver_id = req.user.id;
-    
-    // take date and convert it into year-month-day
-    // var tdate = '01-30-2001';
-    // tdate = [tdate.slice(-4), tdate.slice(0,5)].join('-');
-    // console.log(tdate)
+      // take date and convert it into year-month-day
+      // var tdate = '01-30-2001';
+      // tdate = [tdate.slice(-4), tdate.slice(0,5)].join('-');
+      // console.log(tdate)
 
-    // RidesService.addNewDriverRide(
-    //   req.app.get('db'),
-    //   newRide
-    // )
+      await RidesService.addNewDriverRide(
+        req.app.get('db'),
+        newRide
+      );
 
-    res.status(201).json('post /driver');
+      res.status(201).json('went thru');
+    } 
+    catch(e){
+      next();
+    }
+   
   })
 
   //take delete request and delete driver's ride from db 
@@ -161,14 +170,21 @@ ridesRouter
 
   //get info for single park
   .route('/:ride_id')
-  .get((req, res, next) => {
+  .get(async (req, res, next) => {
 
-    // RidesService.getSingleRide(
-    //   req.app.get('db'),
-    //   req.params.id
-    // )
+    console.log(req.params.id)
+
+    try{
+      let ride = await RidesService.getSingleRide(
+        req.app.get('db'),
+        req.params.ride_id
+      );
     
-    res.status(200).json('single ride');
+      res.status(200).json(ride);
+    }
+    catch(e){
+      next();
+    }
   });
 
     

@@ -1,16 +1,17 @@
 const RidesService = {
 
   //query db based on search params
-  getSearchedRides(){
+  getSearchedRides(db, starting, destination){
     //takes db, starting loc, ending loc
 
-    // return db
-    //   .from('rides')
-    //   .select('*')
-    //   .where({
-    //     starting: starting,
-    //     destination: destination,
-    //   });
+    return db
+      .from('rides')
+      .select('*')
+      .where({
+        starting: starting,
+        destination: destination,
+      })
+      .limit(10);
 
     // knex('users').where({
     //   first_name: 'Test',
@@ -46,14 +47,14 @@ const RidesService = {
 
 
   //insert ride from driver form
-  addNewDriverRide(){
+  addNewDriverRide(db, newRide){
     //takes db, newRide
 
-  //   return db
-  //     .insert(newRide)
-  //     .into('rides')
-  //     .returning('*')
-  //     .then(([ride]) => ride)
+    return db
+      .insert(newRide)
+      .into('rides')
+      .returning('*')
+      .then(([ride]) => ride);
   },
 
 
@@ -126,12 +127,13 @@ const RidesService = {
 
 
   //get single ride by id prolly
-  getSingleRide(){
+  getSingleRide(db, ride_id){
     //takes db and ride_id
-    // return db
-    //   .from('rides')
-    //   .where('id', ride_id)
-    //   .first();
+    return db
+      .from('rides')
+      .select('*')
+      .where('id', ride_id)
+      .first();
   }
 
 };
