@@ -1,12 +1,13 @@
 const express = require('express');
 const RidesService = require('./rides-service');
+const { requireAuth } = require('../auth/g-auth');
 
 const ridesRouter = express.Router();
 const jsonBodyParser = express.json();
 
 ridesRouter
   .route('/')
-  
+  .all(requireAuth)
   //get rides available using service from db
   .post(jsonBodyParser, async (req, res, next) => {
     //take req.body and descturcture, query db to get search results based on body params
@@ -30,6 +31,8 @@ ridesRouter
     //   res.status(201).json('starting locations only');
     // };
 
+    console.log(req.user);
+
     // else{
     const {starting, destination} = req.body;
     let rides = await RidesService.getSearchedRides(
@@ -38,7 +41,7 @@ ridesRouter
       destination,
     );
 
-    console.log(rides);
+    // console.log(rides);
 
     res.status(201).json(rides);
     // }
@@ -70,7 +73,7 @@ ridesRouter
       newRide = {starting, destination, date, time, description, capacity};
 
       for (const [key, value] of Object.entries(newRide))
-        if (value == null)
+        if (!value)
           return res.status(400).json({
             error: `Missing '${key}' in request body`
           });
@@ -172,7 +175,7 @@ ridesRouter
   .route('/:ride_id')
   .get(async (req, res, next) => {
 
-    console.log(req.params.id)
+    console.log(req.params.id);
 
     try{
       let ride = await RidesService.getSingleRide(

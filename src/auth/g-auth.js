@@ -17,7 +17,7 @@ async function requireAuth(req, res, next) {
     let payload = await AuthService.verifyGoogleToken(bearerToken);
     payload = payload.payload;
 
-    console.log(payload);
+    // console.log(payload);
 
     try {
       const user = await AuthService.getUserWithUserId(
@@ -28,6 +28,8 @@ async function requireAuth(req, res, next) {
       if (!user) {
         return res.status(401).json(unauthorizedRequest);
       }
+
+      req.user = user;
 
       next();
     }
