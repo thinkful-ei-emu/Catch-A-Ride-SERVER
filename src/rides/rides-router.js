@@ -154,27 +154,41 @@ ridesRouter
 //passenger clicks reserve/add to ride and update db p1, p2, whichever next is null
   .post(jsonBodyParser, async (req, res, next) => {
 
-    // try{
-    //   const {ride_id} = req.body;
+    try{
+      const {ride_id} = req.body;
+      
+      let ride = await RidesService.getSingleRide(
+        req.app.get('db'),
+        ride_id
+      );
 
-    //   let ride = RidessService.getSingleRide(
-    //     req.app.get('db'),
-    //     ride_id
-    //   );
+      let updatedRide = Object.keys(ride);
+      
+      // console.log(updatedRide)
 
-    //   // take ride object and transfer data into updated ride with next p1, 2, 3, changed to id and not null
-    //   let updatedRide = {}
+      let idToAdd = req.user.user_id;
 
-    //   RidesService.addPassengerToRide(
-    //     req.app.get('db'),
-    //     updatedRide
-    //   )
+      for(let i = 8; i < updatedRide.length; i++){
+        if(ride[updatedRide[i]] === null){
+          ride[updatedRide[i]] = idToAdd;
+          break;
+        }
+      }
 
-    //   res.status(201).json('post /passenger');
-    // }
-    // catch(e){
-    //   next()
-    // }
+      console.log(ride);
+
+      await RidesService.addPassengerToRide(
+        req.app.get('db'),
+        ride
+      );
+
+      res.status(201).json(ride);
+
+      
+    }
+    catch(e){
+      next()
+    }
     
   })
 
@@ -204,7 +218,7 @@ ridesRouter
   .route('/:ride_id')
   .get(async (req, res, next) => {
 
-    console.log(req.params.id)
+    console.log(req.params.ride_id)
 
     try{
       let ride = await RidesService.getSingleRide(
