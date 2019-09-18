@@ -235,6 +235,7 @@ ridesRouter
 
   //get info for single park
   .route('/:ride_id')
+  .all(requireAuth)
   .get(async (req, res, next) => {
 
     console.log(req.params.ride_id)
