@@ -1,6 +1,7 @@
 const express = require('express');
 const RidesService = require('./rides-service');
 const {requireAuth} = require('../auth/g-auth');
+const path = require('path');
 
 const ridesRouter = express.Router();
 const jsonBodyParser = express.json();
@@ -93,9 +94,13 @@ ridesRouter
       await RidesService.addNewDriverRide(
         req.app.get('db'),
         newRide
-      );
-
-      res.status(201).json('went thru');
+      )
+        .then(ride => {
+          res
+            .status(201)
+            .location(path.posix.join(req.originalUrl, `/${ride.id}`))
+            .json(ride);
+        });
     } 
     catch(e){
       next();
