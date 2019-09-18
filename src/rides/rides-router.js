@@ -1,6 +1,6 @@
 const express = require('express');
 const RidesService = require('./rides-service');
-const { requireAuth } = require('../auth/g-auth');
+const {requireAuth} = require('../auth/g-auth');
 
 const ridesRouter = express.Router();
 const jsonBodyParser = express.json();
@@ -8,6 +8,7 @@ const jsonBodyParser = express.json();
 ridesRouter
   .route('/')
   .all(requireAuth)
+  
   //get rides available using service from db
   .post(jsonBodyParser, async (req, res, next) => {
     //take req.body and descturcture, query db to get search results based on body params
@@ -31,8 +32,6 @@ ridesRouter
     //   res.status(201).json('starting locations only');
     // };
 
-    console.log(req.user);
-
     // else{
     const {starting, destination} = req.body;
     let rides = await RidesService.getSearchedRides(
@@ -41,7 +40,7 @@ ridesRouter
       destination,
     );
 
-    // console.log(rides);
+    console.log(rides);
 
     res.status(201).json(rides);
     // }
@@ -73,7 +72,7 @@ ridesRouter
       newRide = {starting, destination, date, time, description, capacity};
 
       for (const [key, value] of Object.entries(newRide))
-        if (!value)
+        if (value == null)
           return res.status(400).json({
             error: `Missing '${key}' in request body`
           });
@@ -106,7 +105,7 @@ ridesRouter
 
     try{
       const {ride_id} = req.body;
-      console.log(ride_id)
+      console.log(ride_id);
       await RidesService.deleteDriverRide(
         req.app.get('db'),
         ride_id,
@@ -135,24 +134,30 @@ ridesRouter
   })
 
 //passenger clicks reserve/add to ride and update db p1, p2, whichever next is null
-  .post(jsonBodyParser, (req, res, next) => {
+  .post(jsonBodyParser, async (req, res, next) => {
 
-    // const {ride_id} = req.body;
+    // try{
+    //   const {ride_id} = req.body;
 
-    // let ride = RidessService.getSingleRide(
-    //   req.app.get('db'),
-    //   ride_id
-    // )
+    //   let ride = RidessService.getSingleRide(
+    //     req.app.get('db'),
+    //     ride_id
+    //   );
 
-    // take ride object and transfer data into updated ride with next p1, 2, 3, changed to id and not null
-    // let updatedRide = {}
+    //   // take ride object and transfer data into updated ride with next p1, 2, 3, changed to id and not null
+    //   let updatedRide = {}
 
-    // RidesService.addPassengerToRide(
-    //   req.app.get('db'),
-    //   updatedRide
-    // )
+    //   RidesService.addPassengerToRide(
+    //     req.app.get('db'),
+    //     updatedRide
+    //   )
 
-    res.status(201).json('post /passenger');
+    //   res.status(201).json('post /passenger');
+    // }
+    // catch(e){
+    //   next()
+    // }
+    
   })
 
 //passenger clicks delete and update db p1, p2, whichever matches passanger
@@ -181,7 +186,7 @@ ridesRouter
   .route('/:ride_id')
   .get(async (req, res, next) => {
 
-    console.log(req.params.id);
+    console.log(req.params.id)
 
     try{
       let ride = await RidesService.getSingleRide(
