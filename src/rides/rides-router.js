@@ -193,23 +193,42 @@ ridesRouter
   })
 
 //passenger clicks delete and update db p1, p2, whichever matches passanger
-  .delete((req, res, next) => {
+  .delete(jsonBodyParser, async (req, res, next) => {
 
-    // let ride = RidessService.getSingleRide(
-    //   req.app.get('db'),
-    //   ride_id
-    // )
+    try{
+      const {ride_id} = req.body;
+      
+      let ride = await RidesService.getSingleRide(
+        req.app.get('db'),
+        ride_id
+      );
 
-    //find passenger id amount p1, 2, 3, etc, and set it to null
-    // let updatedRide = {}
+      let updatedRide = Object.keys(ride);
+      
+      // console.log(updatedRide)
 
-    // RidesService.removePassengerFromRide(
-    //   req.app.get('db'),
-    //   updatedRide
-    // )
+      let idToRemove = req.user.user_id;
 
-    res.status(204);
-    //got 204 no content when testing on postman
+      for(let i = 8; i < updatedRide.length; i++){
+        if(ride[updatedRide[i]] === idToRemove){
+          ride[updatedRide[i]] = null;
+          break;
+        }
+      }
+
+      console.log(ride);
+
+      await RidesService.addPassengerToRide(
+        req.app.get('db'),
+        ride
+      );
+
+      res.status(204).end();
+      //got 204 no content when testing on postman
+    }
+    catch(e){
+      next();
+    }
   });
 
 ridesRouter

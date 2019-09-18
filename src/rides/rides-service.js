@@ -120,13 +120,13 @@ const RidesService = {
 
 
   //delete passenger from ride
-  removePassengerFromRide(){
+  removePassengerFromRide(db, updatedRide){
     //takes db, updatedRide
 
-    // return db
-    //   .from('rides')
-    //   .where('id', ride_id)
-    //   .update(updatedRide)
+    return db
+      .from('rides')
+      .where('id', updatedRide.id)
+      .update(updatedRide);
   },
 
 
