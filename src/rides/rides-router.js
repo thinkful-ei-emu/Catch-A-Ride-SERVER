@@ -286,14 +286,21 @@ ridesRouter
         req.app.get('db'),
         req.params.ride_id
       );
-    
-      res.status(200).json(ride);
+
+      if(!ride){
+        return res.status(404).json({
+          error: 'Ride Does Not Exist'
+        });
+      }
+      else{
+        res.status(200).json(ride);
+      }
     }
     catch(e){
       next();
     }
   });
 
-    
+  
 
 module.exports = ridesRouter;
