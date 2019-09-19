@@ -44,4 +44,6 @@ describe.only('Rides Endpoints', () => {
     });
 
   });
+
+  describe('')
 });
