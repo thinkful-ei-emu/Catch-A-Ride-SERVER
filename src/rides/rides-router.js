@@ -117,12 +117,25 @@ ridesRouter
     try{
       const {ride_id} = req.body;
       console.log(ride_id);
-      await RidesService.deleteDriverRide(
+
+      let ride = await RidesService.getSingleRide(
         req.app.get('db'),
-        ride_id,
+        ride_id
       );
-      return res.status(204).end();
-      //got 204 no content when testing on postman
+
+      if(ride.driver_id !== req.user.user_id){
+        res.status(400).json({
+          error: 'You Cannot Delete A Ride That You Are Not Driving'
+        });
+      }
+      else{
+        await RidesService.deleteDriverRide(
+          req.app.get('db'),
+          ride_id,
+        );
+        return res.status(204).end();
+        //got 204 no content when testing on postman
+      }
     }
     catch(e){
       next();
