@@ -31,7 +31,7 @@ describe('Auth Endpoints', () => {
     it('should do something', async () => {
       return supertest(app)
         .get('/api/auth')
-        .set('Authorization', 'bearer valid_test_token')
+        .set('Authorization', `bearer ${config.TEST_ID_TOKEN}`)
         .expect(200, 'Authenticated!');
     });
 
