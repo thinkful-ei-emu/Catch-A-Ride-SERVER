@@ -1,6 +1,7 @@
 const express = require('express');
 const RidesService = require('./rides-service');
 const {requireAuth} = require('../auth/g-auth');
+const path = require('path');
 
 const ridesRouter = express.Router();
 const jsonBodyParser = express.json();
@@ -44,25 +45,45 @@ ridesRouter
       destination,
     );
 
-    console.log(rides);
-
-    res.status(201).json(rides);
+    if(rides.length === 0){
+      return res.status(404).json({
+        error: 'No Rides Available From This Starting Location To This Destination'
+      });
+    }
+    else{
+      res.status(201).json(rides);
+    }
     // }
 
   });
 
 ridesRouter
   .route('/driver')
+  .all(requireAuth)
 
   //get all drivers rides
-  .get((req, res, next) => {
+  .get( async (req, res, next) => {
 
-    // RidesService.getDriverRides(
-    //   req.app.get('db'),
-    //   req.user.id
-    // )
+    try{
 
-    res.status(200).json('get /driver and drivers rides');
+      let driversRides = await RidesService.getDriverRides(
+        req.app.get('db'),
+        req.user.user_id
+      );
+      
+      //may take this out and just keep sending back an empty [] if run into issues on frontend
+      if(driversRides.length === 0){
+        return res.status(404).json({
+          error: 'You Are Not The Driver Of Any Rides'
+        });
+      }
+      else{
+        res.status(200).json(driversRides);
+      }
+    }
+    catch(e){
+      next();
+    }
 
   })
 
@@ -81,7 +102,7 @@ ridesRouter
             error: `Missing '${key}' in request body`
           });
     
-      //newRide.driver_id = req.user.id;
+      newRide.driver_id = req.user.user_id;
     
       // take date and convert it into year-month-day
       // var tdate = '01-30-2001';
@@ -91,9 +112,13 @@ ridesRouter
       await RidesService.addNewDriverRide(
         req.app.get('db'),
         newRide
-      );
-
-      res.status(201).json('went thru');
+      )
+        .then(ride => {
+          res
+            .status(201)
+            .location(path.posix.join(req.originalUrl, `/${ride.id}`))
+            .json(ride);
+        });
     } 
     catch(e){
       next();
@@ -110,12 +135,25 @@ ridesRouter
     try{
       const {ride_id} = req.body;
       console.log(ride_id);
-      await RidesService.deleteDriverRide(
+
+      let ride = await RidesService.getSingleRide(
         req.app.get('db'),
-        ride_id,
+        ride_id
       );
-      return res.status(204).end();
-      //got 204 no content when testing on postman
+
+      if(ride.driver_id !== req.user.user_id){
+        res.status(400).json({
+          error: 'You Cannot Delete A Ride That You Are Not Driving'
+        });
+      }
+      else{
+        await RidesService.deleteDriverRide(
+          req.app.get('db'),
+          ride_id,
+        );
+        return res.status(204).end();
+        //got 204 no content when testing on postman
+      }
     }
     catch(e){
       next();
@@ -125,86 +163,171 @@ ridesRouter
 
 ridesRouter
   .route('/passenger')
+  .all(requireAuth)
 
 //get passenger specific rides
-  .get((req, res, next) => {
-    
-    // RidesService.getAllPassengerRides(
-    //   req.app.get('db'),
-    //   req.user.id
-    // )
+  .get( async(req, res, next) => {
 
-    res.status(200).json('get /passenger');
+    try{
+      let passengerRides = await RidesService.getAllPassengerRides(
+        req.app.get('db'),
+        req.user.user_id
+      );
+      
+      //may take this out and just keep sending back an empty [] if run into issues on frontend
+      if(passengerRides.length === 0){
+        return res.status(404).json({
+          error: 'You Are Not A Part Of Any Rides'
+        });
+      }
+
+      else{
+        res.status(200).json(passengerRides);
+      }
+    }
+    catch(e){
+      next();
+    }
+    
   })
 
 //passenger clicks reserve/add to ride and update db p1, p2, whichever next is null
   .post(jsonBodyParser, async (req, res, next) => {
 
-    // try{
-    //   const {ride_id} = req.body;
+    try{
+      const {ride_id} = req.body;
+      
+      let ride = await RidesService.getSingleRide(
+        req.app.get('db'),
+        ride_id
+      );
 
-    //   let ride = RidessService.getSingleRide(
-    //     req.app.get('db'),
-    //     ride_id
-    //   );
+      let updatedRide = Object.keys(ride);
+      
+      // console.log(updatedRide)
 
-    //   // take ride object and transfer data into updated ride with next p1, 2, 3, changed to id and not null
-    //   let updatedRide = {}
+      let idToAdd = req.user.user_id;
+      
+      let count = 0;
 
-    //   RidesService.addPassengerToRide(
-    //     req.app.get('db'),
-    //     updatedRide
-    //   )
+      for(let i = 8; i < updatedRide.length; i++){
+        count++;
+        if(ride.driver_id === idToAdd){
+          res.status(400).json({
+            error: 'Driver Cannot Add Themselves As A Passenger'
+          });
+          break;
+        }
+        else if(ride.capacity < count){
+          res.status(400).json({
+            error: 'Max Capacity Reached'
+          });
+          break;
+        }
+        else if(ride[updatedRide[i]] === idToAdd){
+          res.status(400).json({
+            error: 'You Have Already Reserved A Spot In This Ride'
+          });
+          break;
+        }
+        else if(ride[updatedRide[i]] === null){
+          ride[updatedRide[i]] = idToAdd;
+          break;
+        }
+      }
 
-    //   res.status(201).json('post /passenger');
-    // }
-    // catch(e){
-    //   next()
-    // }
+      console.log(ride);
+
+      await RidesService.addPassengerToRide(
+        req.app.get('db'),
+        ride
+      );
+
+      res.status(201).json(ride);
+
+      
+    }
+    catch(e){
+      next();
+    }
     
   })
 
 //passenger clicks delete and update db p1, p2, whichever matches passanger
-  .delete((req, res, next) => {
-
-    // let ride = RidessService.getSingleRide(
-    //   req.app.get('db'),
-    //   ride_id
-    // )
-
-    //find passenger id amount p1, 2, 3, etc, and set it to null
-    // let updatedRide = {}
-
-    // RidesService.removePassengerFromRide(
-    //   req.app.get('db'),
-    //   updatedRide
-    // )
-
-    res.status(204);
-    //got 204 no content when testing on postman
-  });
-
-ridesRouter
-
-  //get info for single park
-  .route('/:ride_id')
-  .get(async (req, res, next) => {
-
-    console.log(req.params.id);
+  .delete(jsonBodyParser, async (req, res, next) => {
 
     try{
+      const {ride_id} = req.body;
+      
       let ride = await RidesService.getSingleRide(
         req.app.get('db'),
-        req.params.ride_id
+        ride_id
       );
-    
-      res.status(200).json(ride);
+
+      let updatedRide = Object.keys(ride);
+      
+      // console.log(updatedRide)
+      let checkPass = Object.values(ride);
+
+      let idToRemove = req.user.user_id;
+
+      for(let i = 8; i < updatedRide.length; i++){
+        if(checkPass.includes(idToRemove) === false){
+          res.status(400).json({
+            error: 'You Must Be A Part Of This Ride To Remove Yourself'
+          });
+          break;
+        }
+        else if(ride[updatedRide[i]] === idToRemove){
+          ride[updatedRide[i]] = null;
+          break;
+        }
+      }
+
+      console.log(ride);
+
+      await RidesService.addPassengerToRide(
+        req.app.get('db'),
+        ride
+      );
+
+      res.status(204).end();
+      //got 204 no content when testing on postman
     }
     catch(e){
       next();
     }
   });
 
-    
+ridesRouter
+
+  //get info for single park
+  .route('/:ride_id')
+  .all(requireAuth)
+  .get(async (req, res, next) => {
+
+    console.log(req.params.ride_id);
+
+    try{
+      let ride = await RidesService.getSingleRide(
+        req.app.get('db'),
+        req.params.ride_id
+      );
+
+      if(!ride){
+        return res.status(404).json({
+          error: 'Ride Does Not Exist'
+        });
+      }
+      else{
+        res.status(200).json(ride);
+      }
+    }
+    catch(e){
+      next();
+    }
+  });
+
+  
 
 module.exports = ridesRouter;

@@ -73,62 +73,65 @@ const RidesService = {
       .del();
   },
 
-  getDriverRides(){
+  getDriverRides(db, driverId){
     //takes db, driver id
 
-    // return db
-    //   .from('rides')
-    //   .select('*')
-    //   .where('driver_id', driverId)
+    return db
+      .from('rides')
+      .select('*')
+      .where('driver_id', driverId);
 
   },
 
 
   //get all rides per passenger id
-  getAllPassengerRides(){
+  getAllPassengerRides(db, pass_id){
     //takes db, pass_id
 
-    // return db
-    //   .from('rides')
-    //   .select('*')
-    //   .where('p1', pass_id)
-    //   .orWhere({
-    //     p2: pass_id,
-    //   })
-    //   .orWhere({
-    //     p3: pass_id,
-    //   })
-    //   .orWhere({
-    //     p4: pass_id,
-    //   })
-    //   .orWhere({
-    //     p5: pass_id,
-    //   })
-    //   .orWhere({
-    //     p6: pass_id,
-    //   });
+    return db
+      .from('rides')
+      .select('*')
+      .where('p1', pass_id)
+      .orWhere({
+        p2: pass_id,
+      })
+      .orWhere({
+        p3: pass_id,
+      })
+      .orWhere({
+        p4: pass_id,
+      })
+      .orWhere({
+        p5: pass_id,
+      })
+      .orWhere({
+        p6: pass_id,
+      })
+      .orWhere({
+        p7: pass_id,
+      });
   },
 
 
   //insert passenger to ride id
-  addPassengerToRide(){
+  addPassengerToRide(db, updatedRide){
     //takes db, updatedRide
 
-    // return db
-    //   .from('rides')
-    //   .where('id', ride_id)
-    //   .update(updatedRide)
+    return db
+      .from('rides')
+      .where('id', updatedRide.id)
+      .update(updatedRide);
   },
 
 
   //delete passenger from ride
-  removePassengerFromRide(){
+  removePassengerFromRide(db, updatedRide){
     //takes db, updatedRide
 
-    // return db
-    //   .from('rides')
-    //   .where('id', ride_id)
-    //   .update(updatedRide)
+    return db
+      .from('rides')
+      .where('id', updatedRide.id)
+      .update(updatedRide);
   },
 
 
