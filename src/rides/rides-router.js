@@ -172,9 +172,21 @@ ridesRouter
 
       for(let i = 8; i < updatedRide.length; i++){
         count++;
-        if(ride.capacity < count){
+        if(ride.driver_id === idToAdd){
+          res.status(400).json({
+            error: 'Driver Cannot Add Themselves As A Passenger'
+          });
+          break;
+        }
+        else if(ride.capacity < count){
           res.status(400).json({
             error: 'Max Capacity Reached'
+          });
+          break;
+        }
+        else if(ride[updatedRide[i]] === idToAdd){
+          res.status(400).json({
+            error: 'You Have Already Reserved A Spot In This Ride'
           });
           break;
         }
