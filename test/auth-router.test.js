@@ -16,7 +16,7 @@ describe('Auth Endpoints', () => {
 
     app.set('db', db);
   });
-
+  2;
   
   after('disconnect from db', () => db.destroy());
   before('cleanup', () => helpers.cleanTables(db));
@@ -31,7 +31,7 @@ describe('Auth Endpoints', () => {
     it('should do something', async () => {
       return supertest(app)
         .get('/api/auth')
-        .set('Authorization', `bearer ${config.TEST_ID_TOKEN}`)
+        .set('Authorization', 'bearer valid_test_token')
         .expect(200, 'Authenticated!');
     });
 

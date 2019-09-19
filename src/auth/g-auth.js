@@ -1,4 +1,5 @@
 const AuthService = require('./auth-service');
+const config = require('../config');
 
 async function requireAuth(req, res, next) {
   const missingToken = { error: 'missing bearer token' };
@@ -10,13 +11,13 @@ async function requireAuth(req, res, next) {
     return res.status(401).json(missingToken);
   }
   else {
+    console.log(authToken);
     bearerToken = authToken.split(' ')[1];
   }
 
   try {
     let payload = await AuthService.verifyGoogleToken(bearerToken);
     payload = payload.payload;
-
     console.log(payload);
 
     try {
