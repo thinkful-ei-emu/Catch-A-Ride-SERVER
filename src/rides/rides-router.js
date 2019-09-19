@@ -41,9 +41,14 @@ ridesRouter
       destination,
     );
 
-    console.log(rides);
-
-    res.status(201).json(rides);
+    if(rides.length === 0){
+      return res.status(404).json({
+        error: 'No Rides Available From This Starting Location To This Destination'
+      });
+    }
+    else{
+      res.status(201).json(rides);
+    }
     // }
 
   });
