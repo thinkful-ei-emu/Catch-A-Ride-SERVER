@@ -240,11 +240,18 @@ ridesRouter
       let updatedRide = Object.keys(ride);
       
       // console.log(updatedRide)
+      let checkPass = Object.values(ride)
 
       let idToRemove = req.user.user_id;
 
       for(let i = 8; i < updatedRide.length; i++){
-        if(ride[updatedRide[i]] === idToRemove){
+        if(checkPass.includes(idToRemove) === false){
+          res.status(400).json({
+            error: 'You Must Be A Part Of This Ride To Remove Yourself'
+          });
+          break;
+        }
+        else if(ride[updatedRide[i]] === idToRemove){
           ride[updatedRide[i]] = null;
           break;
         }
