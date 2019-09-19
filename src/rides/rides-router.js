@@ -61,7 +61,16 @@ ridesRouter
         req.app.get('db'),
         req.user.user_id
       );
-      res.status(200).json(driversRides);
+      
+      //may take this out and just keep sending back an empty [] if run into issues on frontend
+      if(driversRides.length === 0){
+        return res.status(404).json({
+          error: 'You Are Not The Driver Of Any Rides'
+        });
+      }
+      else{
+        res.status(200).json(driversRides);
+      }
     }
     catch(e){
       next();
@@ -155,8 +164,17 @@ ridesRouter
         req.app.get('db'),
         req.user.user_id
       );
-  
-      res.status(200).json(passengerRides);
+      
+      //may take this out and just keep sending back an empty [] if run into issues on frontend
+      if(passengerRides.length === 0){
+        return res.status(404).json({
+          error: 'You Are Not A Part Of Any Rides'
+        });
+      }
+
+      else{
+        res.status(200).json(passengerRides);
+      }
     }
     catch(e){
       next();
