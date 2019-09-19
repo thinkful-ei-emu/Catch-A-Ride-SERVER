@@ -19,7 +19,7 @@ function makeRidesArray() {
   return [
     {
       'id': 1,
-      'driver_id': '113938795112280626788',
+      'driver_id': '103339967984381402998',
       'starting': 'Blacksburg',
       'destination': 'Virginia Beach',
       'date': '2019-09-16T07:00:00.000Z',
@@ -36,7 +36,7 @@ function makeRidesArray() {
     },
     {
       'id': 2,
-      'driver_id': '113938795112280626788',
+      'driver_id': '103339967984381402998',
       'starting': 'Virginia Beach',
       'destination': 'Blacksburg',
       'date': '2019-09-17T07:00:00.000Z',
@@ -53,14 +53,14 @@ function makeRidesArray() {
     },
     {
       'id': 3,
-      'driver_id': '103339967984381402998',
+      'driver_id': '112539454699313514648',
       'starting': 'Blacksburg',
       'destination': 'Fairfax',
       'date': '2019-09-17T07:00:00.000Z',
       'time': '18:00:00',
       'description': 'No charge, hop in',
       'capacity': 5,
-      'p1': '113938795112280626788',
+      'p1': '103339967984381402998',
       'p2': '101820519124146512532',
       'p3': null,
       'p4': null,
@@ -76,6 +76,11 @@ async function seedUsers(db) {
     .insert(makeUsersArray());
 }
 
+async function seedRides(db){
+  await db('rides')
+    .insert(makeRidesArray());
+}
+
 function cleanTables(db) {
   return db.raw(
     `TRUNCATE
@@ -89,5 +94,6 @@ module.exports = {
   makeRidesArray,
 
   cleanTables,
-  seedUsers
+  seedUsers,
+  seedRides,
 };
