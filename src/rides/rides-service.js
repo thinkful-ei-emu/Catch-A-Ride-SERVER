@@ -1,5 +1,10 @@
 const RidesService = {
 
+  getAllRides(db) {
+    return db('rides')
+      .select('*');
+  },
+
   //query db based on search params
   getSearchedRides(db, starting, destination){
     //takes db, starting loc, ending loc

@@ -8,7 +8,11 @@ const jsonBodyParser = express.json();
 ridesRouter
   .route('/')
   .all(requireAuth)
-  
+  .get(async (req, res, next) => {
+    const rides = await RidesService.getAllRides(req.app.get('db'));
+
+    return res.json(rides);
+  })
   //get rides available using service from db
   .post(jsonBodyParser, async (req, res, next) => {
     //take req.body and descturcture, query db to get search results based on body params
@@ -32,7 +36,7 @@ ridesRouter
     //   res.status(201).json('starting locations only');
     // };
 
-    // else{
+    // else {
     const {starting, destination} = req.body;
     let rides = await RidesService.getSearchedRides(
       req.app.get('db'),
@@ -186,7 +190,7 @@ ridesRouter
   .route('/:ride_id')
   .get(async (req, res, next) => {
 
-    console.log(req.params.id)
+    console.log(req.params.id);
 
     try{
       let ride = await RidesService.getSingleRide(

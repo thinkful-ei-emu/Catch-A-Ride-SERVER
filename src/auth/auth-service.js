@@ -50,6 +50,7 @@ const AuthService = {
    * @param {string} username 
    */
   getUserWithUserId(db, user_id) {
+    console.log(user_id);
     return db(this.tableName)
       .where({
         user_id
@@ -64,6 +65,7 @@ const AuthService = {
    * @param {object} newUser 
    */
   insertUser(db, newUser) {
+    console.log(newUser);
     return db(this.tableName)
       .insert({
         ...newUser

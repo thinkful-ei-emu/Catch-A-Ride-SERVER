@@ -1,0 +1,4 @@
+TRUNCATE
+  users,
+  rides
+  RESTART IDENTITY CASCADE;

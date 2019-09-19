@@ -18,8 +18,10 @@
     "chai": "^4.2.0",
     "mocha": "^6.1.4",
     "nodemon": "^1.19.2",
+    "open": "^6.4.0",
     "postgrator": "^3.10.2",
     "postgrator-cli": "^3.3.0",
+    "server-destroy": "^1.0.1",
     "supertest": "^4.0.2"
   },
   "dependencies": {
