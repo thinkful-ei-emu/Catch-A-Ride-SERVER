@@ -167,9 +167,18 @@ ridesRouter
       // console.log(updatedRide)
 
       let idToAdd = req.user.user_id;
+      
+      let count = 0;
 
       for(let i = 8; i < updatedRide.length; i++){
-        if(ride[updatedRide[i]] === null){
+        count++;
+        if(ride.capacity < count){
+          res.status(400).json({
+            error: 'Max Capacity Reached'
+          });
+          break;
+        }
+        else if(ride[updatedRide[i]] === null){
           ride[updatedRide[i]] = idToAdd;
           break;
         }
@@ -187,7 +196,7 @@ ridesRouter
       
     }
     catch(e){
-      next()
+      next();
     }
     
   })
@@ -238,7 +247,7 @@ ridesRouter
   .all(requireAuth)
   .get(async (req, res, next) => {
 
-    console.log(req.params.ride_id)
+    console.log(req.params.ride_id);
 
     try{
       let ride = await RidesService.getSingleRide(
