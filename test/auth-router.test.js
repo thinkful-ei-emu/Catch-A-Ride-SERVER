@@ -28,7 +28,7 @@ describe('Auth Endpoints', () => {
       return helpers.seedUsers(db);
     });
 
-    it('should do something', async () => {
+    it('should respond with 200 and \'Authenticated\' when it receives a valid token', () => {
       return supertest(app)
         .get('/api/auth')
         .set('Authorization', `bearer ${config.TEST_ID_TOKEN}`)

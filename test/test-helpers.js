@@ -1,12 +1,3 @@
-const {google} = require('googleapis');
-const config = require('../src/config');
-const fs = require('fs');
-const path = require('path');
-const http = require('http');
-const url = require('url');
-const opn = require('open');
-const destroyer = require('server-destroy');
-
 function makeUsersArray() {
   return [
     { user_id: '103339967984381402998', email: 'bobsmith3175@gmail.com', name: 'Bob Smith' },
