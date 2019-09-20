@@ -67,6 +67,24 @@ function makeRidesArray() {
       'p5': null,
       'p6': null,
       'p7': null
+    },
+
+    {
+      'id': 4,
+      'driver_id': '112539454699313514648',
+      'starting': 'Fairfax',
+      'destination': 'Blacksburg',
+      'date': '2020-09-17T07:00:00.000Z',
+      'time': '18:00:00',
+      'description': 'No charge, hop in',
+      'capacity': 5,
+      'p1': null,
+      'p2': null,
+      'p3': null,
+      'p4': null,
+      'p5': null,
+      'p6': null,
+      'p7': null
     }
   ];
 }
