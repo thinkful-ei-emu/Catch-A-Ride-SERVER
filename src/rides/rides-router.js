@@ -1,8 +1,9 @@
 const express = require('express');
 const RidesService = require('./rides-service');
 const {requireAuth} = require('../auth/g-auth');
-const path = require('path');
 const nodemailer = require('nodemailer');
+const NodeGeocoder = require('node-geocoder');
+const config = require('../config');
 
 const ridesRouter = express.Router();
 const jsonBodyParser = express.json();
@@ -21,7 +22,7 @@ ridesRouter
     //take req.body and descturcture, query db to get search results based on body params
     //send back driver id as well to allow for frontend verfication when deleting entire ride
 
-    console.log(req.user)
+    console.log(req.user);
 
     if(req.body.hasOwnProperty('starting') === false){
       const {destination} = req.body;
@@ -432,6 +433,41 @@ ridesRouter
         });
       }
       else{
+        let options = {
+          provider: 'google',
+          apiKey: config.GEO_API_KEY
+        };
+
+        let geocoder = NodeGeocoder(options);
+
+        await geocoder.geocode(`${ride.starting}`)
+          .then(res => {
+            let obj = res.pop();
+            let newObj = {
+              lat: obj.latitude,
+              long: obj.longitude
+            };
+            ride.startCoordinates = newObj;
+            return ride;
+          })
+          .catch(err => {
+            console.log(err);
+          });
+
+        await geocoder.geocode(`${ride.destination}`)
+          .then(res => {
+            let obj = res.pop();
+            let newObj = {
+              lat: obj.latitude,
+              long: obj.longitude
+            };
+            ride.destCoordinates = newObj;
+            return ride;
+          })
+          .catch(err => {
+            console.log(err);
+          });
+
         res.status(200).json(ride);
       }
     }

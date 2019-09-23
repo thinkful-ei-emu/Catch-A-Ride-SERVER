@@ -5,5 +5,6 @@ module.exports = {
   CLIENT_ID: process.env.CLIENT_ID || 'Google API Client ID here',
   CLIENT_SECRET: process.env.CLIENT_SECRET || 'Google API Client Secret here',
   DB_URL: process.env.DB_URL,
-  TEST_ID_TOKEN: process.env.TEST_ID_TOKEN
+  TEST_ID_TOKEN: process.env.TEST_ID_TOKEN,
+  GEO_API_KEY: process.env.GEO_API_KEY
 };
