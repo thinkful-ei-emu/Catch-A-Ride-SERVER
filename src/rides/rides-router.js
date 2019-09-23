@@ -128,16 +128,12 @@ ridesRouter
       // tdate = [tdate.slice(-4), tdate.slice(0,5)].join('-');
       // console.log(tdate)
 
-      await RidesService.addNewDriverRide(
+      const ride = await RidesService.addNewDriverRide(
         req.app.get('db'),
         newRide
-      )
-        .then(ride => {
-          res
-            .status(201)
-            .location(path.posix.join(req.originalUrl, `/${ride.id}`))
-            .json(ride);
-        });
+      );
+
+      res.status(201).json(ride);
       
       let transporter = nodemailer.createTransport({
         service: 'gmail',

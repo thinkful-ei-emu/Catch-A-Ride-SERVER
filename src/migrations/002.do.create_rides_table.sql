@@ -1,7 +1,9 @@
 BEGIN;
 
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 create table rides (
-id SERIAL PRIMARY key,
+id uuid primary key default uuid_generate_v4(),
 driver_id varchar references users(user_id),
 starting text not NULL,
 destination text not NULL,
