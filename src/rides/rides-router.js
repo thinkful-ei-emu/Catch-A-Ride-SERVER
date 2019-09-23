@@ -19,42 +19,59 @@ ridesRouter
     //take req.body and descturcture, query db to get search results based on body params
     //send back driver id as well to allow for frontend verfication when deleting entire ride
 
-    // if(res.body.starting === null){
-    //   const {destination} = req.body
-    //   RidesService.getDestinationResultsOnly(
-    //     req.app.get('db'),
-    //     destination
-    //   );
-    //   res.status(201).json('destinations only');
-    // }
+    // console.log(req.body)
 
-    // else if(res.body.destination === null){
-    //   const {starting} = req.body
-    //   RidesService.getStartingResultsOnly(
-    //     req.app.get('db'),
-    //     starting
-    //   );
-    //   res.status(201).json('starting locations only');
-    // };
+    if(req.body.hasOwnProperty('starting') === false){
+      const {destination} = req.body;
+      let rides = await RidesService.getDestinationResultsOnly(
+        req.app.get('db'),
+        destination
+      );
 
-    // else {
-    const {starting, destination} = req.body;
-    let rides = await RidesService.getSearchedRides(
-      req.app.get('db'),
-      starting,
-      destination,
-    );
-
-    if(rides.length === 0){
-      return res.status(404).json({
-        error: 'No Rides Available From This Starting Location To This Destination'
-      });
+      if(rides.length === 0){
+        return res.status(404).json({
+          error: 'No Rides Available From This Starting Location To This Destination'
+        });
+      }
+      else{
+        res.status(201).json(rides);
+      }    
     }
-    else{
-      res.status(201).json(rides);
-    }
-    // }
 
+    else if(req.body.hasOwnProperty('destination') === false){
+      const {starting} = req.body;
+      let rides = await RidesService.getStartingResultsOnly(
+        req.app.get('db'),
+        starting
+      );
+
+      if(rides.length === 0){
+        return res.status(404).json({
+          error: 'No Rides Available From This Starting Location To This Destination'
+        });
+      }
+      else{
+        res.status(201).json(rides);
+      }
+    }
+
+    else {
+      const {starting, destination} = req.body;
+      let rides = await RidesService.getSearchedRides(
+        req.app.get('db'),
+        starting,
+        destination,
+      );
+
+      if(rides.length === 0){
+        return res.status(404).json({
+          error: 'No Rides Available From This Starting Location To This Destination'
+        });
+      }
+      else{
+        res.status(201).json(rides);
+      }
+    }
   });
 
 ridesRouter

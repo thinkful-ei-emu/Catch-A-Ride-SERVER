@@ -24,29 +24,23 @@ const RidesService = {
   },
 
   //maybe search with only destination?
-  // getDestinationResultsOnly(){
+  getDestinationResultsOnly(db, destination){
 
-  //   // return db
-  //   //   .from('rides')
-  //   //   .select('*')
-  //   //   .where({
-  //   //     destination: destination,
-  //   //   });
-
-  // },
+    return db
+      .from('rides')
+      .select('*')
+      .where('destination', 'ILIKE', `%${destination}%`);
+  },
 
 
   // //maybe search with only destination?
-  // getStartingResultsOnly(){
+  getStartingResultsOnly(db, starting){
 
-  //   // return db
-  //   //   .from('rides')
-  //   //   .select('*')
-  //   //   .where({
-  //   //     starting: starting,
-  //   //   });
-
-  // },
+    return db
+      .from('rides')
+      .select('*')
+      .where('starting', 'ILIKE', `%${starting}%`);
+  },
 
 
   //insert ride from driver form
