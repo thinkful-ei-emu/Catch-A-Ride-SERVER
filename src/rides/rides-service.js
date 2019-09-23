@@ -12,10 +12,8 @@ const RidesService = {
     return db
       .from('rides')
       .select('*')
-      .where({
-        starting: starting,
-        destination: destination,
-      })
+      .where('starting', 'ILIKE', `%${starting}%`)
+      .andWhere('destination', 'ILIKE', `%${destination}%`)
       .limit(10);
 
     // knex('users').where({
