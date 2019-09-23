@@ -2,9 +2,11 @@ const express = require('express');
 const RidesService = require('./rides-service');
 const {requireAuth} = require('../auth/g-auth');
 const path = require('path');
+const nodemailer = require('nodemailer');
 
 const ridesRouter = express.Router();
 const jsonBodyParser = express.json();
+
 
 ridesRouter
   .route('/')
@@ -19,7 +21,7 @@ ridesRouter
     //take req.body and descturcture, query db to get search results based on body params
     //send back driver id as well to allow for frontend verfication when deleting entire ride
 
-    // console.log(req.body)
+    console.log(req.user)
 
     if(req.body.hasOwnProperty('starting') === false){
       const {destination} = req.body;
@@ -30,7 +32,7 @@ ridesRouter
 
       if(rides.length === 0){
         return res.status(404).json({
-          error: 'No Rides Available From This Starting Location To This Destination'
+          error: 'No Rides Available to this Destination'
         });
       }
       else{
@@ -47,7 +49,7 @@ ridesRouter
 
       if(rides.length === 0){
         return res.status(404).json({
-          error: 'No Rides Available From This Starting Location To This Destination'
+          error: 'No Rides Available From This Starting Location'
         });
       }
       else{
@@ -136,6 +138,30 @@ ridesRouter
             .location(path.posix.join(req.originalUrl, `/${ride.id}`))
             .json(ride);
         });
+      
+      let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: 'bobsmith3175@gmail.com',
+          pass: 'Plane24235!'
+        }
+      });
+
+      let mailOptions = {
+        from: '"Catch-A-Ride App" <catcharideapp@example.com>',
+        to: `${req.user.email}`,
+        subject: 'Confirmation',
+        text: `Your ride ${ride.starting} to ${ride.destination} that is departing on ${ride.date.toLocaleDateString()} has been posted`
+      };
+
+      transporter.sendMail(mailOptions, function(error, info){
+        if(error){
+          console.log(error);
+        }
+        else{
+          console.log('Email Sent:' + info.response);
+        }
+      });
     } 
     catch(e){
       next();
@@ -168,6 +194,31 @@ ridesRouter
           req.app.get('db'),
           ride_id,
         );
+
+        let transporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            user: 'bobsmith3175@gmail.com',
+            pass: 'Plane24235!'
+          }
+        });
+  
+        let mailOptions = {
+          from: '"Catch-A-Ride App" <catcharideapp@example.com>',
+          to: `${req.user.email}`,
+          subject: 'Confirmation',
+          text: `Your ride from ${ride.starting} to ${ride.destination} that is departing on ${ride.date.toLocaleDateString()} has been deleted`
+        };
+  
+        transporter.sendMail(mailOptions, function(error, info){
+          if(error){
+            console.log(error);
+          }
+          else{
+            console.log('Email Sent:' + info.response);
+          }
+        });
+
         return res.status(204).end();
         //got 204 no content when testing on postman
       }
@@ -262,6 +313,30 @@ ridesRouter
 
       res.status(201).json(ride);
 
+      let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: 'bobsmith3175@gmail.com',
+          pass: 'Plane24235!'
+        }
+      });
+
+      let mailOptions = {
+        from: '"Catch-A-Ride App" <catcharideapp@example.com>',
+        to: `${req.user.email}`,
+        subject: 'Confirmation',
+        text: `You have been added to a ride from ${ride.starting} to ${ride.destination} that is departing on ${ride.date.toLocaleDateString()}` 
+      };
+
+      transporter.sendMail(mailOptions, function(error, info){
+        if(error){
+          console.log(error);
+        }
+        else{
+          console.log('Email Sent:' + info.response);
+        }
+      });
+
       
     }
     catch(e){
@@ -310,6 +385,30 @@ ridesRouter
 
       res.status(204).end();
       //got 204 no content when testing on postman
+
+      let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: 'bobsmith3175@gmail.com',
+          pass: 'Plane24235!'
+        }
+      });
+
+      let mailOptions = {
+        from: '"Catch-A-Ride App" <catcharideapp@example.com>',
+        to: `${req.user.email}`,
+        subject: 'Confirmation',
+        text: `You have been removed from a ride from ${ride.starting} to ${ride.destination} that is departing on ${ride.date.toLocaleDateString()}`
+      };
+
+      transporter.sendMail(mailOptions, function(error, info){
+        if(error){
+          console.log(error);
+        }
+        else{
+          console.log('Email Sent:' + info.response);
+        }
+      });
     }
     catch(e){
       next();
