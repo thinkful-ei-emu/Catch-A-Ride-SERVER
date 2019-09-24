@@ -113,8 +113,10 @@ ridesRouter
     try{
 
       const {starting, destination, date, time, description, capacity} = req.body;
+    
+      let date_time = date.concat(' ', time);
 
-      newRide = {starting, destination, date, time, description, capacity};
+      newRide = {starting, destination, date_time, description, capacity};
 
       for (const [key, value] of Object.entries(newRide))
         if (!value)
@@ -124,11 +126,6 @@ ridesRouter
     
       newRide.driver_id = req.user.user_id;
       newRide.driver_name = req.user.name;
-    
-      // take date and convert it into year-month-day
-      // var tdate = '01-30-2001';
-      // tdate = [tdate.slice(-4), tdate.slice(0,5)].join('-');
-      // console.log(tdate)
 
       const ride = await RidesService.addNewDriverRide(
         req.app.get('db'),
@@ -149,7 +146,7 @@ ridesRouter
         from: '"Catch-A-Ride App" <catcharideapp@example.com>',
         to: `${req.user.email}`,
         subject: 'Confirmation',
-        text: `Your ride ${ride.starting} to ${ride.destination} that is departing on ${ride.date.toLocaleDateString()} has been posted`
+        text: `Your ride ${ride.starting} to ${ride.destination} that is departing on ${ride.date_time.toLocaleDateString()} has been posted`
       };
 
       transporter.sendMail(mailOptions, function(error, info){
@@ -219,7 +216,7 @@ ridesRouter
           from: '"Catch-A-Ride App" <catcharideapp@example.com>',
           to: `${req.user.email}, ${emails.join(', ')}`,
           subject: 'Confirmation',
-          text: `Your ride from ${ride.starting} to ${ride.destination} that is departing on ${ride.date.toLocaleDateString()} has been cancelled`
+          text: `Your ride from ${ride.starting} to ${ride.destination} that is departing on ${ride.date_time.toLocaleDateString()} has been cancelled`
         };
   
         transporter.sendMail(mailOptions, function(error, info){
@@ -258,7 +255,7 @@ ridesRouter
       //may take this out and just keep sending back an empty [] if run into issues on frontend
       if(passengerRides.length === 0){
         return res.status(404).json({
-          error: 'You Are Not A Part Of Any Rides'
+          error: 'You Are Not A Riding Any Rides'
         });
       }
 
@@ -338,7 +335,7 @@ ridesRouter
         from: '"Catch-A-Ride App" <catcharideapp@example.com>',
         to: `${req.user.email}`,
         subject: 'Confirmation',
-        text: `You have been added to a ride from ${ride.starting} to ${ride.destination} that is departing on ${ride.date.toLocaleDateString()}` 
+        text: `You have been added to a ride from ${ride.starting} to ${ride.destination} that is departing on ${ride.date_time.toLocaleDateString()}` 
       };
 
       transporter.sendMail(mailOptions, function(error, info){
@@ -411,7 +408,7 @@ ridesRouter
         from: '"Catch-A-Ride App" <catcharideapp@example.com>',
         to: `${req.user.email}`,
         subject: 'Confirmation',
-        text: `You have been removed from a ride from ${ride.starting} to ${ride.destination} that is departing on ${ride.date.toLocaleDateString()}`
+        text: `You have been removed from a ride from ${ride.starting} to ${ride.destination} that is departing on ${ride.date_time.toLocaleDateString()}`
       };
 
       transporter.sendMail(mailOptions, function(error, info){
