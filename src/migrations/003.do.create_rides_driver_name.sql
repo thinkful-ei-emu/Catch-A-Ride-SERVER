@@ -1,0 +1,1 @@
+ALTER TABLE rides ADD driver_name TEXT NOT NULL;

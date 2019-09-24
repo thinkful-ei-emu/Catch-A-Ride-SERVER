@@ -135,7 +135,7 @@ const RidesService = {
       .select('*')
       .where('id', ride_id)
       .first();
-  }
+  },
 
 };
 

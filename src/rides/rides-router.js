@@ -123,6 +123,7 @@ ridesRouter
           });
     
       newRide.driver_id = req.user.user_id;
+      newRide.driver_name = req.user.name;
     
       // take date and convert it into year-month-day
       // var tdate = '01-30-2001';
