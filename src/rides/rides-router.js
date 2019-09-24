@@ -288,7 +288,7 @@ ridesRouter
       
       let count = 0;
 
-      for(let i = 8; i < updatedRide.length; i++){
+      for(let i = 6; i < updatedRide.length; i++){
         count++;
         if(ride.driver_id === idToAdd){
           res.status(400).json({
@@ -373,7 +373,7 @@ ridesRouter
 
       let idToRemove = req.user.user_id;
 
-      for(let i = 8; i < updatedRide.length; i++){
+      for(let i = 6; i < updatedRide.length; i++){
         if(checkPass.includes(idToRemove) === false){
           res.status(400).json({
             error: 'You Must Be A Part Of This Ride To Remove Yourself'
