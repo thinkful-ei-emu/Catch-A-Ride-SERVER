@@ -141,7 +141,7 @@ const RidesService = {
     return db
       .select('users.email AS passenger_emails')
       .from('rides')
-      .leftjoin('users', function(){
+      .leftJoin('users', function(){
         this.on('users.user_id', '=', 'rides.p1')
           .orOn('users.user_id', '=', 'rides.p2')
           .orOn('users.user_id', '=', 'rides.p3')

@@ -182,14 +182,19 @@ ridesRouter
         ride_id
       );
 
-      // console.log(ride);
+      console.log('breaks after this',ride);
 
-      // let passEmails = await RidesService.getPassEmails(
-      //   req.app.get('db'),
-      //   ride_id
-      // );
+      let passEmails = await RidesService.getPassEmails(
+        req.app.get('db'),
+        ride_id
+      );
 
-      // console.log(passEmails);
+      console.log(passEmails);
+
+      let emails = passEmails.map(email => {
+        return email.passenger_emails;
+      });
+      
 
       if(ride.driver_id !== req.user.user_id){
         res.status(400).json({
@@ -212,9 +217,9 @@ ridesRouter
   
         let mailOptions = {
           from: '"Catch-A-Ride App" <catcharideapp@example.com>',
-          to: `${req.user.email}`,
+          to: `${req.user.email}, ${emails.join(', ')}`,
           subject: 'Confirmation',
-          text: `Your ride from ${ride.starting} to ${ride.destination} that is departing on ${ride.date.toLocaleDateString()} has been deleted`
+          text: `Your ride from ${ride.starting} to ${ride.destination} that is departing on ${ride.date.toLocaleDateString()} has been cancelled`
         };
   
         transporter.sendMail(mailOptions, function(error, info){
@@ -231,6 +236,7 @@ ridesRouter
       }
     }
     catch(e){
+      console.log(e.message)
       next();
     }
    
