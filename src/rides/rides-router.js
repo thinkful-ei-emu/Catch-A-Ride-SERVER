@@ -182,6 +182,15 @@ ridesRouter
         ride_id
       );
 
+      // console.log(ride);
+
+      // let passEmails = await RidesService.getPassEmails(
+      //   req.app.get('db'),
+      //   ride_id
+      // );
+
+      // console.log(passEmails);
+
       if(ride.driver_id !== req.user.user_id){
         res.status(400).json({
           error: 'You Cannot Delete A Ride That You Are Not Driving'
@@ -376,7 +385,7 @@ ridesRouter
 
       console.log(ride);
 
-      await RidesService.addPassengerToRide(
+      await RidesService.removePassengerFromRide(
         req.app.get('db'),
         ride
       );
@@ -444,11 +453,8 @@ ridesRouter
         await geocoder.geocode(`${ride.starting}`)
           .then(res => {
             let obj = res.pop();
-            let newObj = {
-              lat: obj.latitude,
-              long: obj.longitude
-            };
-            ride.startCoordinates = newObj;
+            ride.startCoorLat = obj.latitude;
+            ride.startCoorLong = obj.longitude;
             return ride;
           })
           .catch(err => {
@@ -458,11 +464,12 @@ ridesRouter
         await geocoder.geocode(`${ride.destination}`)
           .then(res => {
             let obj = res.pop();
-            let newObj = {
-              lat: obj.latitude,
-              long: obj.longitude
-            };
-            ride.destCoordinates = newObj;
+            // let newObj = {
+            //   lat: obj.latitude,
+            //   long: obj.longitude
+            // };
+            ride.destCoorLat = obj.latitude;
+            ride.destCoorLong = obj.longitude;
             return ride;
           })
           .catch(err => {

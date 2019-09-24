@@ -137,6 +137,22 @@ const RidesService = {
       .first();
   },
 
+  getPassEmails(db, ride_id){
+    return db
+      .select('users.email AS passenger_emails')
+      .from('rides')
+      .leftjoin('users', function(){
+        this.on('users.user_id', '=', 'rides.p1')
+          .orOn('users.user_id', '=', 'rides.p2')
+          .orOn('users.user_id', '=', 'rides.p3')
+          .orOn('users.user_id', '=', 'rides.p4')
+          .orOn('users.user_id', '=', 'rides.p5')
+          .orOn('users.user_id', '=', 'rides.p6')
+          .orOn('users.user_id', '=', 'rides.p7');
+      })
+      .where('rides.id', ride_id);
+  }
+
 };
 
 module.exports = RidesService;
