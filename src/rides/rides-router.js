@@ -356,7 +356,7 @@ ridesRouter
   })
 
 //passenger clicks delete and update db p1, p2, whichever matches passanger
-  .delete(jsonBodyParser, async (req, res, next) => {
+  .patch(jsonBodyParser, async (req, res, next) => {
 
     try{
       const {ride_id} = req.body;
@@ -393,7 +393,9 @@ ridesRouter
         ride
       );
 
-      res.status(204).end();
+      res.status(200).json({
+        message: 'You have left this ride'
+      });
       //got 204 no content when testing on postman
 
       let transporter = nodemailer.createTransport({
