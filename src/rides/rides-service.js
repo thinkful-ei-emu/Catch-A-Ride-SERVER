@@ -151,7 +151,16 @@ const RidesService = {
           .orOn('users.user_id', '=', 'rides.p7');
       })
       .where('rides.id', ride_id);
-  }
+  },
+
+  editDescription(db, updatedRide){
+    //takes db, updatedRide
+
+    return db
+      .from('rides')
+      .where('id', updatedRide.id)
+      .update(updatedRide);
+  },
 
 };
 

@@ -487,7 +487,75 @@ ridesRouter
       });
       next();
     }
-  });
+  })
+  
+  .patch(jsonBodyParser, async(req, res, next) => {
+    try{
+
+      let ride = await RidesService.getSingleRide(
+        req.app.get('db'),
+        req.params.ride_id
+      );
+
+      if(req.user.user_id !== ride.driver_id){
+        return res.status(400).json({
+          error: 'You must be driving this ride to edit the description'
+        });
+      }
+
+      else{
+        const { updatedDescription } = req.body;
+
+        ride.description = updatedDescription;
+  
+        await RidesService.editDescription(
+          req.app.get('db'),
+          ride
+        );
+
+        let passEmails = await RidesService.getPassEmails(
+          req.app.get('db'),
+          req.params.ride_id
+        );
+  
+        console.log(passEmails);
+  
+        let emails = passEmails.map(email => {
+          return email.passenger_emails;
+        });
+
+        let transporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            user: 'bobsmith3175@gmail.com',
+            pass: 'Plane24235!'
+          }
+        });
+  
+        let mailOptions = {
+          from: '"Catch-A-Ride App" <catcharideapp@example.com>',
+          to: `${req.user.email}, ${emails.join(', ')}`,
+          subject: 'There Have Been Some Changes To Your Upcoming Ride',
+          text: `Your ride from ${ride.starting} to ${ride.destination} that is departing on ${ride.date_time.toLocaleDateString()} has been edited. Please check your dashboard to see what changes have been made.`
+        };
+  
+        transporter.sendMail(mailOptions, function(error, info){
+          if(error){
+            console.log(error);
+          }
+          else{
+            console.log('Email Sent:' + info.response);
+          }
+        });
+  
+        return res.status(201).json(ride);
+      }
+
+    }
+    catch(e){
+      next();
+    }
+  })
 
   
 
