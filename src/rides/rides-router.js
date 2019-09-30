@@ -37,7 +37,7 @@ ridesRouter
         });
       }
       else{
-        res.status(201).json(rides);
+        return res.status(201).json(rides);
       }    
     }
 
@@ -54,7 +54,7 @@ ridesRouter
         });
       }
       else{
-        res.status(201).json(rides);
+        return res.status(201).json(rides);
       }
     }
 
@@ -72,7 +72,7 @@ ridesRouter
         });
       }
       else{
-        res.status(201).json(rides);
+        return res.status(201).json(rides);
       }
     }
   });
@@ -98,7 +98,7 @@ ridesRouter
         });
       }
       else{
-        res.status(200).json(driversRides);
+        return res.status(200).json(driversRides);
       }
     }
     catch(e){
@@ -131,8 +131,6 @@ ridesRouter
         req.app.get('db'),
         newRide
       );
-
-      res.status(201).json(ride);
       
       let transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -157,6 +155,9 @@ ridesRouter
           console.log('Email Sent:' + info.response);
         }
       });
+
+      return res.status(201).json(ride);
+
     } 
     catch(e){
       next();
@@ -194,7 +195,7 @@ ridesRouter
       
 
       if(ride.driver_id !== req.user.user_id){
-        res.status(400).json({
+        return res.status(400).json({
           error: 'You Cannot Delete A Ride That You Are Not Driving'
         });
       }
@@ -233,7 +234,7 @@ ridesRouter
       }
     }
     catch(e){
-      console.log(e.message)
+      console.log(e.message);
       next();
     }
    
@@ -260,7 +261,7 @@ ridesRouter
       }
 
       else{
-        res.status(200).json(passengerRides);
+        return res.status(200).json(passengerRides);
       }
     }
     catch(e){
@@ -291,22 +292,19 @@ ridesRouter
       for(let i = 6; i < updatedRide.length; i++){
         count++;
         if(ride.driver_id === idToAdd){
-          res.status(400).json({
+          return res.status(400).json({
             error: 'Driver Cannot Add Themselves As A Passenger'
           });
-          break;
         }
         else if(ride.capacity < count){
-          res.status(400).json({
+          return res.status(400).json({
             error: 'Max Capacity Reached'
           });
-          break;
         }
         else if(ride[updatedRide[i]] === idToAdd){
-          res.status(400).json({
+          return res.status(400).json({
             error: 'You Have Already Reserved A Spot In This Ride'
           });
-          break;
         }
         else if(ride[updatedRide[i]] === null){
           ride[updatedRide[i]] = idToAdd;
@@ -320,8 +318,6 @@ ridesRouter
         req.app.get('db'),
         ride
       );
-
-      res.status(201).json(ride);
 
       let transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -347,6 +343,7 @@ ridesRouter
         }
       });
 
+      return res.status(201).json(ride);
       
     }
     catch(e){
@@ -375,10 +372,9 @@ ridesRouter
 
       for(let i = 6; i < updatedRide.length; i++){
         if(checkPass.includes(idToRemove) === false){
-          res.status(400).json({
+          return res.status(400).json({
             error: 'You Must Be A Part Of This Ride To Remove Yourself'
           });
-          break;
         }
         else if(ride[updatedRide[i]] === idToRemove){
           ride[updatedRide[i]] = null;
@@ -392,11 +388,6 @@ ridesRouter
         req.app.get('db'),
         ride
       );
-
-      res.status(200).json({
-        message: 'You have left this ride'
-      });
-      //got 204 no content when testing on postman
 
       let transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -421,6 +412,11 @@ ridesRouter
           console.log('Email Sent:' + info.response);
         }
       });
+
+      return res.status(200).json({
+        message: 'You have left this ride'
+      });
+      //got 204 no content when testing on postman
     }
     catch(e){
       next();
@@ -481,7 +477,7 @@ ridesRouter
             console.log(err);
           });
 
-        res.status(200).json(ride);
+        return res.status(200).json(ride);
       }
     }
     catch(e){

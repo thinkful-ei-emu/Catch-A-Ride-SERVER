@@ -229,9 +229,21 @@ describe('Rides Endpoints', () => {
           .expect(200);
       });
 
-      it('should throw 400 if ride does not exist', () => {
+      it('should throw 400 if ride_id is not uuid', () => {
 
         let ride_id = 'fail';
+
+        return supertest(app)
+          .get(`/api/rides/${ride_id}`)
+          .set('Authorization', `bearer ${config.TEST_ID_TOKEN}`)
+          .expect(400, {
+            error: 'Invalid ride_id'
+          });
+      });
+
+      it('should throw 404 if ride_id does not exist and is uuid', () => {
+
+        let ride_id = 'd72628e3-1ef8-4cd4-b1d0-0db190c6e3c2';
 
         return supertest(app)
           .get(`/api/rides/${ride_id}`)
@@ -269,7 +281,7 @@ describe('Rides Endpoints', () => {
       it('should add a passenger to a ride', () => {
 
         let rideId = {
-          ride_id: 'd72628e3-1ef8-4cd4-b1d0-0db190c6e3c7'
+          ride_id: '87e2b4dd-ca1a-4df7-9c93-842eb9a9bf3b'
         };
 
         return supertest(app)

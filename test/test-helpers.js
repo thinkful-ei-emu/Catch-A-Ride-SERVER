@@ -76,6 +76,23 @@ function makeRidesArray() {
       'p6': null,
       'p7': null,
       'driver_name': 'test user'
+    },
+    {
+      'id': '87e2b4dd-ca1a-4df7-9c93-842eb9a9bf3b',
+      'driver_id': '112539454699313514648',
+      'starting': 'Orlando',
+      'destination': 'Disney World',
+      'date_time': '2020-09-17 18:00:00',
+      'description': 'No charge, hop in',
+      'capacity': 2,
+      'p1': '101820519124146512532',
+      'p2': null,
+      'p3': null,
+      'p4': null,
+      'p5': null,
+      'p6': null,
+      'p7': null,
+      'driver_name': 'test user'
     }
   ];
 }
