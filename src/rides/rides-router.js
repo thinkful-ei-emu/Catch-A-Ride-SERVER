@@ -485,6 +485,10 @@ ridesRouter
       }
     }
     catch(e){
+      console.error(e.message);
+      res.status(400).json({
+        error: 'Invalid ride_id'
+      });
       next();
     }
   });

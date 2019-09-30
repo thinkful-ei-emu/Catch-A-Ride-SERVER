@@ -193,6 +193,22 @@ describe('Rides Endpoints', () => {
           .set('Authorization', `bearer ${config.TEST_ID_TOKEN}`)
           .expect(204);
       });
+
+      it('should get 400 if user id !== driver id', () => {
+
+        const idToDelete = {
+          ride_id: '64ea927f-441d-40d4-974b-9c79c8c22d1d'
+        };
+
+        return supertest(app)
+          .delete('/api/rides/driver')
+          .send(idToDelete)
+          .set('Authorization', `bearer ${config.TEST_ID_TOKEN}`)
+          .expect(400, {
+            error: 'You Cannot Delete A Ride That You Are Not Driving'
+          });
+      });
+      
     });
 
     // });
@@ -211,6 +227,18 @@ describe('Rides Endpoints', () => {
           .get(`/api/rides/${ride_id}`)
           .set('Authorization', `bearer ${config.TEST_ID_TOKEN}`)
           .expect(200);
+      });
+
+      it('should throw 400 if ride does not exist', () => {
+
+        let ride_id = 'fail';
+
+        return supertest(app)
+          .get(`/api/rides/${ride_id}`)
+          .set('Authorization', `bearer ${config.TEST_ID_TOKEN}`)
+          .expect(404, {
+            error: 'Ride Does Not Exist'
+          });
       });
     });
     // });
@@ -250,6 +278,51 @@ describe('Rides Endpoints', () => {
           .set('Authorization', `bearer ${config.TEST_ID_TOKEN}`)
           .expect(201);
       });
+
+      it('should get 400 if driver is trying to add themselves to their ride', () => {
+
+        let rideId = {
+          ride_id: '57bd37c7-7d87-40bc-a691-00f25988f298'
+        };
+
+        return supertest(app)
+          .post('/api/rides/passenger')
+          .send(rideId)
+          .set('Authorization', `bearer ${config.TEST_ID_TOKEN}`)
+          .expect(400, {
+            error: 'Driver Cannot Add Themselves As A Passenger'
+          });
+      });
+
+      it('should get 400 if max capacity is reached', () => {
+
+        let rideId = {
+          ride_id: 'd72628e3-1ef8-4cd4-b1d0-0db190c6e3c7'
+        };
+
+        return supertest(app)
+          .post('/api/rides/passenger')
+          .send(rideId)
+          .set('Authorization', `bearer ${config.TEST_ID_TOKEN}`)
+          .expect(400, {
+            error: 'Max Capacity Reached'
+          });
+      });
+
+      it('should get 400 if user is already a part of the ride', () => {
+
+        let rideId = {
+          ride_id: '64ea927f-441d-40d4-974b-9c79c8c22d1d'
+        };
+
+        return supertest(app)
+          .post('/api/rides/passenger')
+          .send(rideId)
+          .set('Authorization', `bearer ${config.TEST_ID_TOKEN}`)
+          .expect(400, {
+            error: 'You Have Already Reserved A Spot In This Ride'
+          });
+      });
     });
 
     describe('PATCH /api/rides/passenger', () => {
@@ -268,6 +341,21 @@ describe('Rides Endpoints', () => {
           .send(rideId)
           .set('Authorization', `bearer ${config.TEST_ID_TOKEN}`)
           .expect(200);
+      });
+
+      it('should throw 400 if user is not a part of the ride', () => {
+
+        const rideId = {
+          ride_id: 'd72628e3-1ef8-4cd4-b1d0-0db190c6e3c7'
+        };
+
+        return supertest(app)
+          .patch('/api/rides/passenger')
+          .send(rideId)
+          .set('Authorization', `bearer ${config.TEST_ID_TOKEN}`)
+          .expect(400, {
+            error: 'You Must Be A Part Of This Ride To Remove Yourself'
+          });
       });
     });
     // });
