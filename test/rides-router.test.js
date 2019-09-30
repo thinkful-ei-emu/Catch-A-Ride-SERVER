@@ -134,7 +134,7 @@ describe('Rides Endpoints', () => {
     it('should delete the ride by id', () => {
 
       const idToDelete = {
-        ride_id: 1
+        ride_id: '8c792a91-d346-4f93-bd77-1c04ddc7ccac'
       };
 
       return supertest(app)
@@ -155,7 +155,7 @@ describe('Rides Endpoints', () => {
     });
     it('should get ride by id', () => {
 
-      let ride_id = 1;
+      let ride_id = '8c792a91-d346-4f93-bd77-1c04ddc7ccac';
 
       return supertest(app)
         .get(`/api/rides/${ride_id}`)
@@ -191,7 +191,7 @@ describe('Rides Endpoints', () => {
     it('should add a passenger to a ride', () => {
 
       let rideId = {
-        ride_id: 4
+        ride_id: 'd72628e3-1ef8-4cd4-b1d0-0db190c6e3c7'
       };
 
       return supertest(app)
@@ -202,7 +202,7 @@ describe('Rides Endpoints', () => {
     });
   });
 
-  describe('DEL /api/rides/passenger', () => {
+  describe('PATCH /api/rides/passenger', () => {
     beforeEach('insert users and rides', async () => {
       await helpers.seedUsers(db);
       await helpers.seedRides(db);
@@ -210,14 +210,14 @@ describe('Rides Endpoints', () => {
     it('should remove passenger from ride if they are a part of it', () => {
 
       const rideId = {
-        ride_id: 3
+        ride_id: '64ea927f-441d-40d4-974b-9c79c8c22d1d'
       };
 
       return supertest(app)
-        .delete('/api/rides/passenger')
+        .patch('/api/rides/passenger')
         .send(rideId)
         .set('Authorization', `bearer ${config.TEST_ID_TOKEN}`)
-        .expect(204);
+        .expect(200);
     });
   });
   // });
