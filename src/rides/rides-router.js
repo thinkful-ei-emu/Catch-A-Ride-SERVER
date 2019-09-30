@@ -256,7 +256,7 @@ ridesRouter
       //may take this out and just keep sending back an empty [] if run into issues on frontend
       if(passengerRides.length === 0){
         return res.status(404).json({
-          error: 'You Are Not A Riding Any Rides'
+          error: 'You Are Not Riding In Any Rides'
         });
       }
 
