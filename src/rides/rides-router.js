@@ -513,7 +513,6 @@ ridesRouter
             error: 'Enter a valid date'
           });
         }
-        
         let checkHour = Number(time.split(':')[0]);
         let checkMin = Number(time.split(':')[1].split(' ')[0]);
 

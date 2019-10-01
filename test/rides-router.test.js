@@ -41,31 +41,58 @@ describe('Rides Endpoints', () => {
           .post('/api/rides')
           .set('Authorization', `bearer ${config.TEST_ID_TOKEN}`)
           .send(testSearch)
-          .expect(201, [testRides[0]]);
+          .expect(201)
+          .expect(res => {
+            expect(res.body[0]).to.have.property('id');
+            expect(res.body[0]).to.have.property('driver_id');
+            expect(res.body[0]).to.have.property('driver_name');
+            expect(res.body[0].starting).to.eql(testRides[0].starting);
+            expect(res.body[0].destination).to.eql(testRides[0].destination);
+            expect(res.body[0].description).to.eql(testRides[0].description);
+            expect(res.body[0].capacity).to.eql(testRides[0].capacity);          
+          });
       });
 
       it('should return the rides based on search params with just starting', () => {
         const testSearch = {
-          starting: testRides[0].starting,
+          starting: testRides[3].starting,
         };
 
         return supertest(app)
           .post('/api/rides')
           .set('Authorization', `bearer ${config.TEST_ID_TOKEN}`)
           .send(testSearch)
-          .expect(201, [testRides[0], testRides[2]]);
+          .expect(201)
+          .expect(res => {
+            expect(res.body[0]).to.have.property('id');
+            expect(res.body[0]).to.have.property('driver_id');
+            expect(res.body[0]).to.have.property('driver_name');
+            expect(res.body[0].starting).to.eql(testRides[3].starting);
+            expect(res.body[0].destination).to.eql(testRides[3].destination);
+            expect(res.body[0].description).to.eql(testRides[3].description);
+            expect(res.body[0].capacity).to.eql(testRides[3].capacity);          
+          });
       });
 
       it('should return the rides based on search params with just destination', () => {
         const testSearch = {
-          destination: testRides[1].destination,
+          destination: testRides[2].destination,
         };
 
         return supertest(app)
           .post('/api/rides')
           .set('Authorization', `bearer ${config.TEST_ID_TOKEN}`)
           .send(testSearch)
-          .expect(201, [testRides[1], testRides[3]]);
+          .expect(201)
+          .expect(res => {
+            expect(res.body[0]).to.have.property('id');
+            expect(res.body[0]).to.have.property('driver_id');
+            expect(res.body[0]).to.have.property('driver_name');
+            expect(res.body[0].starting).to.eql(testRides[2].starting);
+            expect(res.body[0].destination).to.eql(testRides[2].destination);
+            expect(res.body[0].description).to.eql(testRides[2].description);
+            expect(res.body[0].capacity).to.eql(testRides[2].capacity);          
+          });
       });
 
       it('should return 404 not found if no results found with starting and destination', () => {
@@ -158,7 +185,6 @@ describe('Rides Endpoints', () => {
             expect(res.body).to.have.property('driver_id');
             expect(res.body.starting).to.eql(newRide.starting);
             expect(res.body.destination).to.eql(newRide.destination);
-            expect(res.body.time).to.eql(newRide.time);
             expect(res.body.description).to.eql(newRide.description);
             expect(res.body.capacity).to.eql(newRide.capacity);
           })
@@ -250,6 +276,81 @@ describe('Rides Endpoints', () => {
           .set('Authorization', `bearer ${config.TEST_ID_TOKEN}`)
           .expect(404, {
             error: 'Ride Does Not Exist'
+          });
+      });
+    });
+
+    describe('PATCH /:ride_id', () => {
+      beforeEach('insert users and rides', async () => {
+        await helpers.seedUsers(db);
+        await helpers.seedRides(db);
+      });
+      it('should reqest and edit db', () => {
+
+        let ride_id = '8c792a91-d346-4f93-bd77-1c04ddc7ccac';
+
+        let editRide = {
+          starting: 'Alabama',
+          destination: 'Virginia Beach',
+          date: '2019-09-16',
+          time: '08:00:00',
+          description: 'test test test'
+        };
+
+        return supertest(app)
+          .patch(`/api/rides/${ride_id}`)
+          .set('Authorization', `bearer ${config.TEST_ID_TOKEN}`)
+          .send(editRide)
+          .expect(201)
+          .expect(res => {
+            expect(res.body).to.have.property('id');
+            expect(res.body).to.have.property('driver_id');
+            expect(res.body.starting).to.eql(editRide.starting);
+            expect(res.body.destination).to.eql(res.body.destination);
+            expect(res.body.description).to.eql(editRide.description);
+            expect(res.body.capacity).to.eql(res.body.capacity);
+          });
+      });
+
+      it('should throw 400 if invalid date', () => {
+
+        let ride_id = '8c792a91-d346-4f93-bd77-1c04ddc7ccac';
+
+        let editRide = {
+          starting: 'Alabama',
+          destination: 'Virginia Beach',
+          date: '2019-0912-16',
+          time: '08:00:00',
+          description: 'test test test'
+        };
+
+        return supertest(app)
+          .patch(`/api/rides/${ride_id}`)
+          .set('Authorization', `bearer ${config.TEST_ID_TOKEN}`)
+          .send(editRide)
+          .expect(400, {
+            error: 'Enter a valid date'
+          });
+      });
+
+      it('should throw 400 if invalid time', () => {
+
+        let ride_id = '8c792a91-d346-4f93-bd77-1c04ddc7ccac';
+
+        let editRide = {
+          starting: 'Alabama',
+          destination: 'Virginia Beach',
+          date: '2019-09-16',
+          time: '08:asdf:00',
+          description: 'test test test'
+        };
+
+        return supertest(app)
+          .patch(`/api/rides/${ride_id}`)
+          .set('Authorization', `bearer ${config.TEST_ID_TOKEN}`)
+          .send(editRide)
+          .expect(400, {
+            error: 'Enter a valid time'
           });
       });
     });
