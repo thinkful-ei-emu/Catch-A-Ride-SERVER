@@ -504,10 +504,21 @@ ridesRouter
       }
 
       else{
-        const { updatedDescription } = req.body;
+        const { starting, destination, description, date, time } = req.body;
 
-        ride.description = updatedDescription;
-  
+        let date_time = new Date(date.concat(' ', time));
+
+        const updateRide = {starting, destination, description, date_time};
+        console.log(updateRide);
+
+        let arr = Object.keys(updateRide);
+
+        for (let i = 0; i < arr.length; i++){
+          if(updateRide[arr[i]] !== undefined){
+            ride[arr[i]] = updateRide[arr[i]];
+          }
+        }
+
         await RidesService.editDescription(
           req.app.get('db'),
           ride
@@ -536,7 +547,7 @@ ridesRouter
           from: '"Catch-A-Ride App" <catcharideapp@example.com>',
           to: `${req.user.email}, ${emails.join(', ')}`,
           subject: 'There Have Been Some Changes To Your Upcoming Ride',
-          text: `Your ride from ${ride.starting} to ${ride.destination} that is departing on ${ride.date_time.toLocaleDateString()} has been edited. Please check your dashboard to see what changes have been made.`
+          text: 'Your upcoming ride has had changes made to it. Please check your dashboard to see what changes have been made and to see if you can still "CATCH-A-RIDE" !'
         };
   
         transporter.sendMail(mailOptions, function(error, info){
@@ -553,9 +564,10 @@ ridesRouter
 
     }
     catch(e){
+      console.error(e.message);
       next();
     }
-  })
+  });
 
   
 
