@@ -505,6 +505,17 @@ ridesRouter
 
       else{
         const { starting, destination, description, date, time } = req.body;
+        console.log(time.split(':')[0], Number(time.split(':')[1].split(' ')[0]));
+
+        if(Number(time.split(':')[0]) > 12 
+        || Number(time.split(':')[0]) < 1 
+        || Number(time.split(':')[1].split(' ')[0]) > 59 
+        || Number(time.split(':')[1].split(' ')[0] < 0)
+        || isNaN(Number(time.split(':')[1].split(' ')[0])) === true) {
+          return res.status(400).json({
+            error: 'Enter a valid time'
+          });
+        }
         
         let date_time = new Date(date.concat(' ', time));
 
