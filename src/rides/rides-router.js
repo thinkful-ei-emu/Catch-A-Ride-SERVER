@@ -505,7 +505,7 @@ ridesRouter
 
       else{
         const { starting, destination, description, date, time } = req.body;
-
+        
         let date_time = new Date(date.concat(' ', time));
 
         const updateRide = {starting, destination, description, date_time};
