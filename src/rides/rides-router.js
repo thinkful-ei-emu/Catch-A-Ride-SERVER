@@ -22,7 +22,7 @@ ridesRouter
     //take req.body and descturcture, query db to get search results based on body params
     //send back driver id as well to allow for frontend verfication when deleting entire ride
 
-    console.log(req.user);
+    // console.log(req.user);
 
     if(req.body.hasOwnProperty('starting') === false){
       const {destination} = req.body;
@@ -173,21 +173,21 @@ ridesRouter
 
     try{
       const {ride_id} = req.body;
-      console.log(ride_id);
+      // console.log(ride_id);
 
       let ride = await RidesService.getSingleRide(
         req.app.get('db'),
         ride_id
       );
 
-      console.log('breaks after this',ride);
+      // console.log('breaks after this',ride);
 
       let passEmails = await RidesService.getPassEmails(
         req.app.get('db'),
         ride_id
       );
 
-      console.log(passEmails);
+      // console.log(passEmails);
 
       let emails = passEmails.map(email => {
         return email.passenger_emails;
@@ -312,9 +312,9 @@ ridesRouter
         }
       }
 
-      console.log(ride);
+      // console.log(ride);
 
-      await RidesService.addPassengerToRide(
+      await RidesService.editRide(
         req.app.get('db'),
         ride
       );
@@ -382,9 +382,9 @@ ridesRouter
         }
       }
 
-      console.log(ride);
+      // console.log(ride);
 
-      await RidesService.removePassengerFromRide(
+      await RidesService.editRide(
         req.app.get('db'),
         ride
       );
@@ -430,7 +430,7 @@ ridesRouter
   .all(requireAuth)
   .get(async (req, res, next) => {
 
-    console.log(req.params.ride_id);
+    // console.log(req.params.ride_id);
 
     try{
       let ride = await RidesService.getSingleRide(
@@ -529,7 +529,7 @@ ridesRouter
         let date_time = new Date(date.concat(' ', time));
 
         const updateRide = {starting, destination, description, date_time};
-        console.log(updateRide);
+        // console.log(updateRide);
 
         let arr = Object.keys(updateRide);
 
@@ -539,7 +539,7 @@ ridesRouter
           }
         }
 
-        await RidesService.editDescription(
+        await RidesService.editRide(
           req.app.get('db'),
           ride
         );
@@ -549,7 +549,7 @@ ridesRouter
           req.params.ride_id
         );
   
-        console.log(passEmails);
+        // console.log(passEmails);
   
         let emails = passEmails.map(email => {
           return email.passenger_emails;

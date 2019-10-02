@@ -15,12 +15,6 @@ const RidesService = {
       .where('starting', 'ILIKE', `%${starting}%`)
       .andWhere('destination', 'ILIKE', `%${destination}%`)
       .limit(10);
-
-    // knex('users').where({
-    //   first_name: 'Test',
-    //   last_name:  'User'
-    // }).select('id')
-    // Outputs: select `id` from `users` where `first_name` = 'Test' and `last_name` = 'User'
   },
 
   //maybe search with only destination?
@@ -106,25 +100,25 @@ const RidesService = {
 
 
   //insert passenger to ride id
-  addPassengerToRide(db, updatedRide){
-    //takes db, updatedRide
+  // addPassengerToRide(db, updatedRide){
+  //   //takes db, updatedRide
 
-    return db
-      .from('rides')
-      .where('id', updatedRide.id)
-      .update(updatedRide);
-  },
+  //   return db
+  //     .from('rides')
+  //     .where('id', updatedRide.id)
+  //     .update(updatedRide);
+  // },
 
 
   //delete passenger from ride
-  removePassengerFromRide(db, updatedRide){
-    //takes db, updatedRide
+  // removePassengerFromRide(db, updatedRide){
+  //   //takes db, updatedRide
 
-    return db
-      .from('rides')
-      .where('id', updatedRide.id)
-      .update(updatedRide);
-  },
+  //   return db
+  //     .from('rides')
+  //     .where('id', updatedRide.id)
+  //     .update(updatedRide);
+  // },
 
 
   //get single ride by id prolly
@@ -153,7 +147,7 @@ const RidesService = {
       .where('rides.id', ride_id);
   },
 
-  editDescription(db, updatedRide){
+  editRide(db, updatedRide){
     //takes db, updatedRide
 
     return db
