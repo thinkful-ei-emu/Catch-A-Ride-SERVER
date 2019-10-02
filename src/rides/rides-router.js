@@ -20,9 +20,9 @@ ridesRouter
   //get rides available using service from db
   .post(jsonBodyParser, async (req, res, next) => {
     //take req.body and descturcture, query db to get search results based on body params
-    //send back driver id as well to allow for frontend verfication when deleting entire ride
+    
 
-    // console.log(req.user);
+    //if only destination provided, search by destination only
 
     if(req.body.hasOwnProperty('starting') === false){
       const {destination} = req.body;
@@ -41,6 +41,8 @@ ridesRouter
       }    
     }
 
+    //if only starting provided, search by providing 
+
     else if(req.body.hasOwnProperty('destination') === false){
       const {starting} = req.body;
       let rides = await RidesService.getStartingResultsOnly(
@@ -58,6 +60,7 @@ ridesRouter
       }
     }
 
+    //take both starting and destination, and query db
     else {
       const {starting, destination} = req.body;
       let rides = await RidesService.getSearchedRides(
@@ -85,13 +88,13 @@ ridesRouter
   .get( async (req, res, next) => {
 
     try{
-
+      //take user id and match it where user id matches driver id
       let driversRides = await RidesService.getDriverRides(
         req.app.get('db'),
         req.user.user_id
       );
       
-      //may take this out and just keep sending back an empty [] if run into issues on frontend
+      
       if(driversRides.length === 0){
         return res.status(404).json({
           error: 'You Are Not The Driver Of Any Rides'
@@ -126,12 +129,12 @@ ridesRouter
     
       newRide.driver_id = req.user.user_id;
       newRide.driver_name = req.user.name;
-
+      //add ride to db through service
       const ride = await RidesService.addNewDriverRide(
         req.app.get('db'),
         newRide
       );
-      
+      //email driver saying ride has been created
       let transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -167,44 +170,39 @@ ridesRouter
 
   //take delete request and delete driver's ride from db 
   .delete(jsonBodyParser, async (req, res, next) => {
-  //have to send id in and check id match for driver otherwise dont let delete
-  //or have delete be verified frontend by sending driver id from rides list (ref driver id column to user id)
-  //if else frontend to allow deletion request to be sent through
 
     try{
       const {ride_id} = req.body;
-      // console.log(ride_id);
 
+      //get ride by id
       let ride = await RidesService.getSingleRide(
         req.app.get('db'),
         ride_id
       );
 
-      // console.log('breaks after this',ride);
-
+      //get passenger emails who are a part of the ride
       let passEmails = await RidesService.getPassEmails(
         req.app.get('db'),
         ride_id
       );
 
-      // console.log(passEmails);
-
       let emails = passEmails.map(email => {
         return email.passenger_emails;
       });
       
-
+      //check if driver id matches user id
       if(ride.driver_id !== req.user.user_id){
         return res.status(400).json({
           error: 'You Cannot Delete A Ride That You Are Not Driving'
         });
       }
       else{
+        //delete ride by id
         await RidesService.deleteDriverRide(
           req.app.get('db'),
           ride_id,
         );
-
+        //email driver saying that drive has been deleted
         let transporter = nodemailer.createTransport({
           service: 'gmail',
           auth: {
@@ -230,7 +228,7 @@ ridesRouter
         });
 
         return res.status(204).end();
-        //got 204 no content when testing on postman
+        
       }
     }
     catch(e){
@@ -248,12 +246,12 @@ ridesRouter
   .get( async(req, res, next) => {
 
     try{
+      //get rides that a user is passenger in
       let passengerRides = await RidesService.getAllPassengerRides(
         req.app.get('db'),
         req.user.user_id
       );
       
-      //may take this out and just keep sending back an empty [] if run into issues on frontend
       if(passengerRides.length === 0){
         return res.status(404).json({
           error: 'You Are Not Riding In Any Rides'
@@ -283,42 +281,44 @@ ridesRouter
 
       let updatedRide = Object.keys(ride);
       
-      // console.log(updatedRide)
 
       let idToAdd = req.user.user_id;
       
       let count = 0;
-
+      
       for(let i = 6; i < updatedRide.length; i++){
         count++;
+        //check if driver is trying to add themselves
         if(ride.driver_id === idToAdd){
           return res.status(400).json({
             error: 'Driver Cannot Add Themselves As A Passenger'
           });
         }
+        //check if ride is full
         else if(ride.capacity < count){
           return res.status(400).json({
             error: 'Max Capacity Reached'
           });
         }
+        //check if user is already a passenger in the ride
         else if(ride[updatedRide[i]] === idToAdd){
           return res.status(400).json({
             error: 'You Have Already Reserved A Spot In This Ride'
           });
         }
+        //if passes other verifications, add user to ride
         else if(ride[updatedRide[i]] === null){
           ride[updatedRide[i]] = idToAdd;
           break;
         }
       }
-
-      // console.log(ride);
-
+      //make changes to ride using service
       await RidesService.editRide(
         req.app.get('db'),
         ride
       );
 
+      //send email to user saying that they have been added to ride
       let transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -365,30 +365,32 @@ ridesRouter
 
       let updatedRide = Object.keys(ride);
       
-      // console.log(updatedRide)
+      
       let checkPass = Object.values(ride);
 
       let idToRemove = req.user.user_id;
 
       for(let i = 6; i < updatedRide.length; i++){
+        //check if user is a part of the ride
         if(checkPass.includes(idToRemove) === false){
           return res.status(400).json({
             error: 'You Must Be A Part Of This Ride To Remove Yourself'
           });
         }
+        //if passing other validation, allow removal of user from ride
         else if(ride[updatedRide[i]] === idToRemove){
           ride[updatedRide[i]] = null;
           break;
         }
       }
 
-      // console.log(ride);
-
+      //edit ride using service
       await RidesService.editRide(
         req.app.get('db'),
         ride
       );
 
+      //send email letting passenger know that they have left the ride
       let transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -416,7 +418,7 @@ ridesRouter
       return res.status(200).json({
         message: 'You have left this ride'
       });
-      //got 204 no content when testing on postman
+      
     }
     catch(e){
       next();
@@ -430,8 +432,6 @@ ridesRouter
   .all(requireAuth)
   .get(async (req, res, next) => {
 
-    // console.log(req.params.ride_id);
-
     try{
       let ride = await RidesService.getSingleRide(
         req.app.get('db'),
@@ -444,6 +444,7 @@ ridesRouter
         });
       }
       else{
+        //send back coordinates of starting location and destination
         let options = {
           provider: 'google',
           apiKey: config.GEO_API_KEY
@@ -465,10 +466,6 @@ ridesRouter
         await geocoder.geocode(`${ride.destination}`)
           .then(res => {
             let obj = res.pop();
-            // let newObj = {
-            //   lat: obj.latitude,
-            //   long: obj.longitude
-            // };
             ride.destCoorLat = obj.latitude;
             ride.destCoorLong = obj.longitude;
             return ride;
@@ -476,12 +473,13 @@ ridesRouter
           .catch(err => {
             console.log(err);
           });
-
+        //send response including ride + coordinates
         return res.status(200).json(ride);
       }
     }
     catch(e){
       console.error(e.message);
+      //check if ride id is valid
       res.status(400).json({
         error: 'Invalid ride_id'
       });
@@ -489,6 +487,7 @@ ridesRouter
     }
   })
   
+  //allow driver to edit their ride details using param ride_id
   .patch(jsonBodyParser, async(req, res, next) => {
     try{
 
@@ -496,7 +495,8 @@ ridesRouter
         req.app.get('db'),
         req.params.ride_id
       );
-
+      
+      //validate if user is the driver
       if(req.user.user_id !== ride.driver_id){
         return res.status(400).json({
           error: 'You must be driving this ride to edit the description'
@@ -505,9 +505,10 @@ ridesRouter
 
       else{
         const { starting, destination, description, date, time } = req.body;
-      
+        
         let checkDate = new Date(date);
 
+        //validate date
         if(checkDate.toString() === 'Invalid Date'){
           return res.status(400).json({
             error: 'Enter a valid date'
@@ -516,6 +517,7 @@ ridesRouter
         let checkHour = Number(time.split(':')[0]);
         let checkMin = Number(time.split(':')[1].split(' ')[0]);
 
+        //validate time
         if(checkHour > 12 
         || checkHour < 1 
         || checkMin > 59 
@@ -529,7 +531,6 @@ ridesRouter
         let date_time = new Date(date.concat(' ', time));
 
         const updateRide = {starting, destination, description, date_time};
-        // console.log(updateRide);
 
         let arr = Object.keys(updateRide);
 
@@ -538,7 +539,8 @@ ridesRouter
             ride[arr[i]] = updateRide[arr[i]];
           }
         }
-
+        
+        //edit ride using service
         await RidesService.editRide(
           req.app.get('db'),
           ride
@@ -548,13 +550,12 @@ ridesRouter
           req.app.get('db'),
           req.params.ride_id
         );
-  
-        // console.log(passEmails);
-  
+    
         let emails = passEmails.map(email => {
           return email.passenger_emails;
         });
 
+        //send emails to driver and passengers saying that the ride has been edited
         let transporter = nodemailer.createTransport({
           service: 'gmail',
           auth: {

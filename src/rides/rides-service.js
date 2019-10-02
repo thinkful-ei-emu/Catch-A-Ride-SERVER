@@ -17,7 +17,7 @@ const RidesService = {
       .limit(10);
   },
 
-  //maybe search with only destination?
+  //search with only destination
   getDestinationResultsOnly(db, destination){
 
     return db
@@ -27,7 +27,7 @@ const RidesService = {
   },
 
 
-  // //maybe search with only destination?
+  //search with only starting
   getStartingResultsOnly(db, starting){
 
     return db
@@ -59,6 +59,7 @@ const RidesService = {
       .del();
   },
 
+  //get rides that a driver is driving
   getDriverRides(db, driverId){
     //takes db, driver id
 
@@ -98,30 +99,7 @@ const RidesService = {
       });
   },
 
-
-  //insert passenger to ride id
-  // addPassengerToRide(db, updatedRide){
-  //   //takes db, updatedRide
-
-  //   return db
-  //     .from('rides')
-  //     .where('id', updatedRide.id)
-  //     .update(updatedRide);
-  // },
-
-
-  //delete passenger from ride
-  // removePassengerFromRide(db, updatedRide){
-  //   //takes db, updatedRide
-
-  //   return db
-  //     .from('rides')
-  //     .where('id', updatedRide.id)
-  //     .update(updatedRide);
-  // },
-
-
-  //get single ride by id prolly
+  //get single ride by id
   getSingleRide(db, ride_id){
     //takes db and ride_id
     return db
@@ -131,6 +109,7 @@ const RidesService = {
       .first();
   },
 
+  //get emails of passengers of a ride
   getPassEmails(db, ride_id){
     return db
       .select('users.email AS passenger_emails')
@@ -147,6 +126,7 @@ const RidesService = {
       .where('rides.id', ride_id);
   },
 
+  //edit ride
   editRide(db, updatedRide){
     //takes db, updatedRide
 
