@@ -1,3 +1,5 @@
+const xss = require('xss');
+
 const RidesService = {
 
   getAllRides(db) {
@@ -135,6 +137,27 @@ const RidesService = {
       .where('id', updatedRide.id)
       .update(updatedRide);
   },
+
+  serializeRide(ride){
+    console.log('hello', ride);
+    return {
+      id: ride.id,
+      driver_id: xss(ride.driver_id),
+      starting: xss(ride.starting),
+      destination: xss(ride.destination),
+      description: xss(ride.description),
+      capacity: ride.capacity,
+      p1: ride.p1,
+      p2: ride.p2,
+      p3: ride.p3,
+      p4: ride.p4,
+      p5: ride.p5,
+      p6: ride.p6,
+      p7: ride.p7,
+      driver_name: xss(ride.driver_name),
+      date_time: ride.date_time,
+    };
+  }
 
 };
 

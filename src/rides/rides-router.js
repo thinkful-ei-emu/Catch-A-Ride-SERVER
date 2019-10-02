@@ -4,6 +4,7 @@ const {requireAuth} = require('../auth/g-auth');
 const nodemailer = require('nodemailer');
 const NodeGeocoder = require('node-geocoder');
 const config = require('../config');
+const xss = require('xss');
 
 const ridesRouter = express.Router();
 const jsonBodyParser = express.json();
@@ -25,7 +26,8 @@ ridesRouter
     //if only destination provided, search by destination only
 
     if(req.body.hasOwnProperty('starting') === false){
-      const {destination} = req.body;
+      let {destination} = req.body;
+      destination = xss(destination);
       let rides = await RidesService.getDestinationResultsOnly(
         req.app.get('db'),
         destination
@@ -44,7 +46,8 @@ ridesRouter
     //if only starting provided, search by providing 
 
     else if(req.body.hasOwnProperty('destination') === false){
-      const {starting} = req.body;
+      let {starting} = req.body;
+      starting = xss(starting);
       let rides = await RidesService.getStartingResultsOnly(
         req.app.get('db'),
         starting
@@ -62,7 +65,10 @@ ridesRouter
 
     //take both starting and destination, and query db
     else {
-      const {starting, destination} = req.body;
+      let {starting, destination} = req.body;
+      starting = xss(starting);
+      destination = xss(destination);
+
       let rides = await RidesService.getSearchedRides(
         req.app.get('db'),
         starting,
@@ -129,6 +135,8 @@ ridesRouter
     
       newRide.driver_id = req.user.user_id;
       newRide.driver_name = req.user.name;
+
+      newRide = RidesService.serializeRide(newRide);
       //add ride to db through service
       const ride = await RidesService.addNewDriverRide(
         req.app.get('db'),
@@ -347,6 +355,7 @@ ridesRouter
       
     }
     catch(e){
+      console.error(e.message);
       next();
     }
     
@@ -433,9 +442,10 @@ ridesRouter
   .get(async (req, res, next) => {
 
     try{
+      let ride_id = req.params.ride_id;
       let ride = await RidesService.getSingleRide(
         req.app.get('db'),
-        req.params.ride_id
+        ride_id
       );
 
       if(!ride){
@@ -473,6 +483,7 @@ ridesRouter
           .catch(err => {
             console.log(err);
           });
+
         //send response including ride + coordinates
         return res.status(200).json(ride);
       }
@@ -490,10 +501,10 @@ ridesRouter
   //allow driver to edit their ride details using param ride_id
   .patch(jsonBodyParser, async(req, res, next) => {
     try{
-
+      let ride_id = req.params.ride_id;
       let ride = await RidesService.getSingleRide(
         req.app.get('db'),
-        req.params.ride_id
+        ride_id
       );
       
       //validate if user is the driver
@@ -539,6 +550,8 @@ ridesRouter
             ride[arr[i]] = updateRide[arr[i]];
           }
         }
+
+        ride = RidesService.serializeRide(ride);
         
         //edit ride using service
         await RidesService.editRide(
@@ -548,7 +561,7 @@ ridesRouter
 
         let passEmails = await RidesService.getPassEmails(
           req.app.get('db'),
-          req.params.ride_id
+          ride_id
         );
     
         let emails = passEmails.map(email => {
@@ -579,6 +592,36 @@ ridesRouter
             console.log('Email Sent:' + info.response);
           }
         });
+
+        //send back coordinates of starting location and destination
+        let options = {
+          provider: 'google',
+          apiKey: config.GEO_API_KEY
+        };
+  
+        let geocoder = NodeGeocoder(options);
+  
+        await geocoder.geocode(`${ride.starting}`)
+          .then(res => {
+            let obj = res.pop();
+            ride.startCoorLat = obj.latitude;
+            ride.startCoorLong = obj.longitude;
+            return ride;
+          })
+          .catch(err => {
+            console.log(err);
+          });
+  
+        await geocoder.geocode(`${ride.destination}`)
+          .then(res => {
+            let obj = res.pop();
+            ride.destCoorLat = obj.latitude;
+            ride.destCoorLong = obj.longitude;
+            return ride;
+          })
+          .catch(err => {
+            console.log(err);
+          });
   
         return res.status(201).json(ride);
       }
