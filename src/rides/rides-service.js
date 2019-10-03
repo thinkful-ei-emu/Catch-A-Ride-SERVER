@@ -138,6 +138,7 @@ const RidesService = {
       .update(updatedRide);
   },
 
+  //serialize and sanitize
   serializeRide(ride){
     console.log('hello', ride);
     return {
