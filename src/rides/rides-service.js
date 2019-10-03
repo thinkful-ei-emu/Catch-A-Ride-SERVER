@@ -140,7 +140,6 @@ const RidesService = {
 
   //serialize and sanitize
   serializeRide(ride){
-    console.log('hello', ride);
     return {
       id: ride.id,
       driver_id: xss(ride.driver_id),
