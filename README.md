@@ -1,26 +1,49 @@
-# Express Boilerplate!
+CATCH-A-RIDE SERVER
+============
 
-This is a boilerplate project used for starting new projects!
+Server repository for "Catch-A-Ride."
 
-## Set up
+## Getting Started
 
-Complete the following steps to start a new project (NEW-PROJECT-NAME):
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-1. Clone this repository to your local machine `git clone BOILERPLATE-URL NEW-PROJECTS-NAME`
-2. `cd` into the cloned repository
-3. Make a fresh start of the git history for this project with `rm -rf .git && git init`
-4. Install the node dependencies `npm install`
-5. Move the example Environment file to `.env` that will be ignored by git and read by the express server `mv example.env .env`
-6. Edit the contents of the `package.json` to use NEW-PROJECT-NAME instead of `"name": "express-boilerplate",`
+### Prerequisites
 
-## Scripts
+* [Node.js](https://nodejs.org/en/)
+* [PostgreSQL](https://www.postgresql.org)
 
-Start the application `npm start`
+### Installing
 
-Start nodemon for the application `npm run dev`
+A step by step series of examples that tell you how to get a development env running
 
-Run the tests `npm test`
+Install dependencies
+```
+npm install
+```
+To launch local server
+```
+npm run dev
+```
+## Running the tests
 
-## Deploying
+```
+npm t
+```
 
-When your new project is ready for deployment, add a new Heroku application with `heroku create`. This will make a new git remote called "heroku" and you can then `npm run deploy` which will push to this remote's master branch.
+## Deployment
+
+* [Heroku](https://devcenter.heroku.com/articles/git)
+
+
+## Built With
+* [Express](https://expressjs.com/)
+* [Node.js](https://nodejs.org/en/)
+* [PostgreSQL](https://www.postgresql.org)
+* [Javascript](https://www.javascript.com)
+
+## Authors
+* **Adrienne Smith**
+* **Arpan Patel**
+* **Andrew Yin** 
+* **Jordon Carter** 
+* **Zane Kuehn**
