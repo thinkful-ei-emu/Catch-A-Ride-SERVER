@@ -1,0 +1,1 @@
+ALTER TABLE rides DROP COLUMN driver_name;

@@ -1,3 +1,5 @@
+const xss = require('xss');
+
 const RidesService = {
 
   getAllRides(db) {
@@ -12,43 +14,29 @@ const RidesService = {
     return db
       .from('rides')
       .select('*')
-      .where({
-        starting: starting,
-        destination: destination,
-      })
+      .where('starting', 'ILIKE', `%${starting}%`)
+      .andWhere('destination', 'ILIKE', `%${destination}%`)
       .limit(10);
-
-    // knex('users').where({
-    //   first_name: 'Test',
-    //   last_name:  'User'
-    // }).select('id')
-    // Outputs: select `id` from `users` where `first_name` = 'Test' and `last_name` = 'User'
   },
 
-  //maybe search with only destination?
-  // getDestinationResultsOnly(){
+  //search with only destination
+  getDestinationResultsOnly(db, destination){
 
-  //   // return db
-  //   //   .from('rides')
-  //   //   .select('*')
-  //   //   .where({
-  //   //     destination: destination,
-  //   //   });
-
-  // },
+    return db
+      .from('rides')
+      .select('*')
+      .where('destination', 'ILIKE', `%${destination}%`);
+  },
 
 
-  // //maybe search with only destination?
-  // getStartingResultsOnly(){
+  //search with only starting
+  getStartingResultsOnly(db, starting){
 
-  //   // return db
-  //   //   .from('rides')
-  //   //   .select('*')
-  //   //   .where({
-  //   //     starting: starting,
-  //   //   });
-
-  // },
+    return db
+      .from('rides')
+      .select('*')
+      .where('starting', 'ILIKE', `%${starting}%`);
+  },
 
 
   //insert ride from driver form
@@ -73,6 +61,7 @@ const RidesService = {
       .del();
   },
 
+  //get rides that a driver is driving
   getDriverRides(db, driverId){
     //takes db, driver id
 
@@ -112,30 +101,7 @@ const RidesService = {
       });
   },
 
-
-  //insert passenger to ride id
-  addPassengerToRide(db, updatedRide){
-    //takes db, updatedRide
-
-    return db
-      .from('rides')
-      .where('id', updatedRide.id)
-      .update(updatedRide);
-  },
-
-
-  //delete passenger from ride
-  removePassengerFromRide(db, updatedRide){
-    //takes db, updatedRide
-
-    return db
-      .from('rides')
-      .where('id', updatedRide.id)
-      .update(updatedRide);
-  },
-
-
-  //get single ride by id prolly
+  //get single ride by id
   getSingleRide(db, ride_id){
     //takes db and ride_id
     return db
@@ -143,6 +109,54 @@ const RidesService = {
       .select('*')
       .where('id', ride_id)
       .first();
+  },
+
+  //get emails of passengers of a ride
+  getPassEmails(db, ride_id){
+    return db
+      .select('users.email AS passenger_emails')
+      .from('rides')
+      .leftJoin('users', function(){
+        this.on('users.user_id', '=', 'rides.p1')
+          .orOn('users.user_id', '=', 'rides.p2')
+          .orOn('users.user_id', '=', 'rides.p3')
+          .orOn('users.user_id', '=', 'rides.p4')
+          .orOn('users.user_id', '=', 'rides.p5')
+          .orOn('users.user_id', '=', 'rides.p6')
+          .orOn('users.user_id', '=', 'rides.p7');
+      })
+      .where('rides.id', ride_id);
+  },
+
+  //edit ride
+  editRide(db, updatedRide){
+    //takes db, updatedRide
+
+    return db
+      .from('rides')
+      .where('id', updatedRide.id)
+      .update(updatedRide);
+  },
+
+  //serialize and sanitize
+  serializeRide(ride){
+    return {
+      id: ride.id,
+      driver_id: xss(ride.driver_id),
+      starting: xss(ride.starting),
+      destination: xss(ride.destination),
+      description: xss(ride.description),
+      capacity: ride.capacity,
+      p1: ride.p1,
+      p2: ride.p2,
+      p3: ride.p3,
+      p4: ride.p4,
+      p5: ride.p5,
+      p6: ride.p6,
+      p7: ride.p7,
+      driver_name: xss(ride.driver_name),
+      date_time: ride.date_time,
+    };
   }
 
 };
