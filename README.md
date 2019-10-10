@@ -74,7 +74,7 @@ createdb -U dunder-mifflin catch-a-ride-test
 ```bash
 npm install
 npm run migrate
-env MIGRATION_DB_NAME=spaced-repetition-test npm run migrate
+env MIGRATION_DB_NAME=catch-a-ride-test npm run migrate
 ```
 
 * For testing, use client to login using the credentials below. Take the token from the application tab in dev tools, and then in the .env file, paste/set it equal to TEST_ID_TOKEN. Run npm test and all tests should pass.
