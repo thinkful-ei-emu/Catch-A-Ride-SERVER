@@ -424,9 +424,7 @@ ridesRouter
         }
       });
 
-      return res.status(200).json({
-        message: 'You have left this ride'
-      });
+      return res.status(200).json(ride);
       
     }
     catch(e){
