@@ -77,9 +77,28 @@ npm run migrate
 env MIGRATION_DB_NAME=catch-a-ride-test npm run migrate
 ```
 
-* For testing, use client to login using the credentials below. Take the token from the application tab in dev tools, and then in the .env file, paste/set it equal to TEST_ID_TOKEN. Run npm test and all tests should pass.
-    - Email: bobsmith3175@gmail.com
-    - Password: Plane24235!
+* For testing, use client to login using the credentials below. Take the token from the application tab in dev tools, and then in the .env file, paste/set it equal to TEST_ID_TOKEN. 
+  * Email: bobsmith3175@gmail.com
+  * Password: Plane24235!
+ 
+  * Your .env must also have a Google API CLIENT_ID and CLIENT_SECRET before running tests. An example .env appears as so:
+ 
+    ~~~~
+    NODE_ENV=development
+    PORT=8080
+    MIGRATION_DB_HOST=127.0.0.1
+    MIGRATION_DB_PORT=5432
+    MIGRATION_DB_NAME=catch-a-ride-test
+    MIGRATION_DB_USER=
+    MIGRATION_DB_PASS=
+    DB_URL= "postgresql://username:password@localhost/catch-a-ride"
+    TEST_DB_URL="postgresql://username:password@localhost/catch-a-ride-test"
+    CLIENT_ID=
+    CLIENT_SECRET=
+    TEST_ID_TOKEN=
+    GEO_API_KEY=
+    ~~~~
+  * Run npm test and all tests should pass.
 
 ## Database Maintenance:
 * For local database maintenance, you can use psql ... -f .\src\db-maintenance\delete_old_rides.sql to delete rides in the local database that are older than the time at invocation, but not within an interval of 24 hours.
